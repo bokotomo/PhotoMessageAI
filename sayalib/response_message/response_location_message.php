@@ -1,23 +1,31 @@
 <?php
+namespace Saya\MessageControllor;
+
+use Saya\MessageControllor;
+use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use \LINE\LINEBot;
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
+use LINE\LINEBot\MessageBuilder\ImageMessageBuilder;
+use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
+
 class LocationMessageControllor
 {
   private $ReplyToken;
-  private $bot;
+  private $Bot;
   private $latitude;
   private $longitude;
   private $address;
 
-  public function __construct($ReplyToken,$ReceiveData){
+  public function __construct($ReplyToken, $ReceiveData){
     $this->ReplyToken = $ReplyToken;
-    $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(ACCESS_TOKEN);
-    $this->bot = new \LINE\LINEBot($httpClient, ['channelSecret' => SECRET_TOKEN]);
+    $httpClient = new CurlHTTPClient(ACCESS_TOKEN);
+    $this->Bot = new LINEBot($httpClient, ['channelSecret' => SECRET_TOKEN]);
     $this->latitude = $ReceiveData->events[0]->message->latitude;
     $this->longitude = $ReceiveData->events[0]->message->longitude;
     $this->address = $ReceiveData->events[0]->message->address;
   }
 
   public function responseMessage(){
-    $LineMessage = new LineMessageHandler($this->ReplyToken);
 
     $LocationName = $this->address;
     $LocationName = mb_convert_kana($LocationName, "na");
@@ -29,17 +37,18 @@ class LocationMessageControllor
     ];
     $LocationName = str_replace(array_keys($texttable), array_values($texttable), $LocationName);
     $LocationName = preg_replace("/[0-9]/", "", $LocationName);
+  
     $sendtext = $LocationName."を代表する写真はこれかな！^o^";
-    $TextMessageBuilder = new LINE\LINEBot\MessageBuilder\TextMessageBuilder($sendtext);
+    $TextMessageBuilder = new TextMessageBuilder($sendtext);
     
     $OriginalContentSSLUrl = "https://tomo.syo.tokyo/openimg/shibuya.jpg";
     $PreviewImageSSLUrl = "https://tomo.syo.tokyo/openimg/shibuya.jpg";
-    $ImageMessage = new LINE\LINEBot\MessageBuilder\ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
+    $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
     
-    $message = new LINE\LINEBot\MessageBuilder\MultiMessageBuilder();
+    $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
     $message->add($ImageMessage);
-    $response = $this->bot->replyMessage($this->ReplyToken, $message);
+    $response = $this->Bot->replyMessage($this->ReplyToken, $message);
   }  
  
 } 

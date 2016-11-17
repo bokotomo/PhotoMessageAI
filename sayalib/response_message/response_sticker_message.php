@@ -1,26 +1,34 @@
 <?php
+namespace Saya\MessageControllor;
+
+use Saya\MessageControllor;
+use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use \LINE\LINEBot;
+use LINE\LINEBot\MessageBuilder\StickerMessageBuilder;
+use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
+
 class StickerMessageControllor
 {
   private $ReplyToken;
-  private $bot;
+  private $Bot;
   private $MessageStickerId;
   private $MessagePackageId;
 
-  public function __construct($ReplyToken,$ReceiveData){
+  public function __construct($ReplyToken, $ReceiveData){
+    $httpClient = new CurlHTTPClient(ACCESS_TOKEN);
+    $this->Bot = new LINEBot($httpClient, ['channelSecret' => SECRET_TOKEN]);
     $this->ReplyToken = $ReplyToken;
     $this->MessageStickerId = $ReceiveData->events[0]->message->stickerId;
     $this->MessagePackageId = $ReceiveData->events[0]->message->packageId;
-    $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(ACCESS_TOKEN);
-    $this->bot = new \LINE\LINEBot($httpClient, ['channelSecret' => SECRET_TOKEN]);
   }
 
   public function responseMessage(){
-    $LineMessage = new LineMessageHandler($this->ReplyToken);
     
-    $StickerMessage = new LINE\LINEBot\MessageBuilder\StickerMessageBuilder(1,2);
-    $message = new LINE\LINEBot\MessageBuilder\MultiMessageBuilder();
+    $StickerMessage = new StickerMessageBuilder(1, 2);
+    
+    $message = new MultiMessageBuilder();
     $message->add($StickerMessage);
-    $response = $this->bot->replyMessage($this->ReplyToken, $message);
+    $response = $this->Bot->replyMessage($this->ReplyToken, $message);
   }  
  
 } 

@@ -1,9 +1,7 @@
 <?php
 
-/**
- * 2016 Fukumoto
- * mail : bokotomo@me.com
- */
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
+use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
 
 class LineMessageHandler
 {
@@ -31,8 +29,8 @@ class LineMessageHandler
   }
 
   public function TextMessage($text){
-    $TextMessageBuilder = new LINE\LINEBot\MessageBuilder\TextMessageBuilder($text);
-    $message = new LINE\LINEBot\MessageBuilder\MultiMessageBuilder();
+    $TextMessageBuilder = new TextMessageBuilder($text);
+    $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
     $response = $this->bot->replyMessage($this->replyToken, $message);
   }
