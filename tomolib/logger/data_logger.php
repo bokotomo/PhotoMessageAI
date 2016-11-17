@@ -1,6 +1,8 @@
 <?php
+namespace TomoLib;
+use TomoLib;
 
-class ReceiveDataLogger
+class DataLogger
 {
   private $FilePath;
   private $LogData;

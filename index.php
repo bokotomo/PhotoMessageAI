@@ -28,10 +28,12 @@ use Saya\MessageControllor\TextMessageControllor;
 use Saya\MessageControllor\StickerMessageControllor;
 use Saya\MessageControllor\ImageMessageControllor;
 use Saya\MessageControllor\LocationMessageControllor;
+use TomoLib\DataLogger;
 
 require_once(__DIR__."/config.php");
 require_once(__DIR__."/vendor/autoload.php");
 require_once(__DIR__."/sayalib/autoload.php");
+require_once(__DIR__."/tomolib/autoload.php");
 
 $InputData = file_get_contents("php://input");
 $ReceiveData = json_decode($InputData);
@@ -52,10 +54,10 @@ if($MessageType == "text"){
   $LocationMessageControllor->responseMessage();
 }
 
-$ReceiveDataLogger = new ReceiveDataLogger();
-$ReceiveDataLogger->setFilePath(__DIR__."/line.html");
-$ReceiveDataLogger->setLogType("html");
-$ReceiveDataLogger->setLogData($InputData);
-$ReceiveDataLogger->outputLog();
+$DataLogger = new DataLogger();
+$DataLogger->setLogType("html");
+$DataLogger->setFilePath(__DIR__."/line.html");
+$DataLogger->setLogData($InputData);
+$DataLogger->outputLog();
 
 ?>
