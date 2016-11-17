@@ -7,6 +7,19 @@
  * Variable : PascalCase (Make the beginning of a word a noun / 単語の先頭を名詞にする)
  * DEFINE   : UPPERCASE_SNAKECASE
  * 
+ * [Comment]
+ * don't write comments (コメントは書かない)
+ * 
+ * [Document]
+ * Write all the usage of classes and functions in the document (クラスや関数の使い方は全てドキュメントに記入)
+ * 
+ * [Indent]
+ * Indent is for two characters (インデントは半角スペース2文字分)
+ * 
+ * [Argument]
+ * If there are multiple arguments, put a single space after the delimited comma (引数が複数ある場合は区切りのカンマの後に半角スペースを1つ挟む)
+ * 
+ * [information]
  * 2016 Fukumoto
  * E-mail : bokotomo@me.com
  */
