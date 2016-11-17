@@ -4,4 +4,5 @@
   require_once(__DIR__."/response_message/response_image_message.php");
   require_once(__DIR__."/response_message/response_sticker_message.php");
   require_once(__DIR__."/response_message/response_location_message.php");
+  require_once(__DIR__."/receive_data_logger/receive_data_logger.php");
 ?>
