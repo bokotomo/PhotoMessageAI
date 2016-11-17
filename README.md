@@ -7,8 +7,8 @@ Sayaさんは写真を扱ってくれるLineBotです。
 <a href="https://line.me/R/ti/p/%40hxs4046d"><img height="36" border="0" alt="友だち追加" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"></a>
 
 ## DemoImage
-<img src="https://tomo.syo.tokyo/openimg/5219767428574.LINE.jpg">  
-<img src="https://tomo.syo.tokyo/openimg/5219756900962.LINE.jpg">  
+<img src="https://tomo.syo.tokyo/openimg/5219767428574.LINE.jpg" width="200px">
+<img src="https://tomo.syo.tokyo/openimg/5219756900962.LINE.jpg" width="200px">  
 
 ## Getting started
 1 edit config.php  
