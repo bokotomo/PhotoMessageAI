@@ -4,6 +4,7 @@ Sayaさんは写真を扱ってくれるLineBotです。
 自動学習して賢くなっていきます。  
 
 ## Sayaを友達に追加する
+<img src="https://tomo.syo.tokyo/openimg/saya_line_qr.png" width="200px">  
 <a href="https://line.me/R/ti/p/%40hxs4046d"><img height="36" border="0" alt="友だち追加" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"></a>
 
 ## DemoImage
