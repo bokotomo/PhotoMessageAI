@@ -24,6 +24,11 @@
  * E-mail : bokotomo@me.com
  */
 
+use Saya\MessageControllor\TextMessageControllor;
+use Saya\MessageControllor\StickerMessageControllor;
+use Saya\MessageControllor\ImageMessageControllor;
+use Saya\MessageControllor\LocationMessageControllor;
+
 require_once(__DIR__."/config.php");
 require_once(__DIR__."/vendor/autoload.php");
 require_once(__DIR__."/sayalib/autoload.php");
