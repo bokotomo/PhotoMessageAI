@@ -22,14 +22,14 @@ class MainControllor
     $this->MessageType = $ReceiveData->events[0]->message->type;
     $this->UserId = $ReceiveData->events[0]->source->userId;
     if(empty($this->UserId )){
-      $this->UserId = "5";
+      $this->UserId = "1";
     }
     $this->DatabaseProvider = new DatabaseProvider("sqlite3", __DIR__."/../database/sayadb.sqlite3");
     if(!$this->checkUserLoginDone()){
       $this->addUser();
     }
   }
-  
+
   private function checkUserLoginDone(){
     $stmt = $this->DatabaseProvider->runQuery("select * from user_info where user_id = '".$this->UserId."'");
     $stmt->execute();
@@ -38,7 +38,7 @@ class MainControllor
     }
     return false;
   }
-  
+
   private function addUser(){
     $stmt = $this->DatabaseProvider->runQuery("insert into user_info(user_id,date) values(:id, :date)");
     $stmt->bindValue(':id', $this->UserId, \PDO::PARAM_STR);
