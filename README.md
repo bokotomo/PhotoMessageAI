@@ -11,6 +11,11 @@ Sayaさんは写真を扱ってくれるLineBotです。
 <img src="https://tomo.syo.tokyo/openimg/5219767428574.LINE.jpg" width="200px">
 <img src="https://tomo.syo.tokyo/openimg/5219756900962.LINE.jpg" width="200px">  
 
+## できること
+1 会話  
+2 写真加工  
+3 他の友人に写真をアンケート  
+
 ## Getting started
 1 edit config.php  
 
