@@ -6,19 +6,46 @@ use Saya\MessageControllor\TextMessageControllor;
 use Saya\MessageControllor\StickerMessageControllor;
 use Saya\MessageControllor\ImageMessageControllor;
 use Saya\MessageControllor\LocationMessageControllor;
+use TomoLib\DatabaseProvider;
 
 class MainControllor
 {
   private $ReceiveData;
   private $ReplyToken;
   private $MessageType;
+  private $DatabaseProvider;
+  private $UserId;
 
   public function __construct($ReceiveData){
     $this->ReceiveData = $ReceiveData;
     $this->ReplyToken = $ReceiveData->events[0]->replyToken;
-    $this->MessageType = $ReceiveData->events[0]->message->type;   
+    $this->MessageType = $ReceiveData->events[0]->message->type;
+    $this->UserId = $ReceiveData->events[0]->source->userId;
+    if(empty($this->UserId )){
+      $this->UserId = "5";
+    }
+    $this->DatabaseProvider = new DatabaseProvider("sqlite3", __DIR__."/../database/sayadb.sqlite3");
+    if(!$this->checkUserLoginDone()){
+      $this->addUser();
+    }
   }
   
+  private function checkUserLoginDone(){
+    $stmt = $this->DatabaseProvider->runQuery("select * from user_info where user_id = '".$this->UserId."'");
+    $stmt->execute();
+    while($row = $stmt -> fetch(\PDO::FETCH_ASSOC)) {
+      return true;
+    }
+    return false;
+  }
+  
+  private function addUser(){
+    $stmt = $this->DatabaseProvider->runQuery("insert into user_info(user_id,date) values(:id, :date)");
+    $stmt->bindValue(':id', $this->UserId, \PDO::PARAM_STR);
+    $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
+    $stmt->execute();
+  }
+
   public function responseMessage(){
     if($this->MessageType == "text"){
       $TextMessageControllor = new TextMessageControllor($this->ReplyToken, $this->ReceiveData);
