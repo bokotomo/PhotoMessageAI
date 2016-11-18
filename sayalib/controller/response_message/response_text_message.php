@@ -9,8 +9,6 @@ use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
 use TomoLib\DatabaseProvider;
 
-
-
 class TextMessageControllor
 {
   private $ReplyToken;
@@ -32,10 +30,11 @@ class TextMessageControllor
   }
 
   private function addUserText(){
-    $stmt = $this->DatabaseProvider->runQuery("insert into user_text(user_id, text, date) values(:id, :text, :date)");
+    $stmt = $this->DatabaseProvider->runQuery("insert into user_text(user_id, text, date, type) values(:id, :text, :date, :type)");
     $stmt->bindValue(':id', $this->MessageUserId, \PDO::PARAM_STR);
     $stmt->bindValue(':text', $this->MessageText, \PDO::PARAM_STR);
     $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
+    $stmt->bindValue(':type', "text", \PDO::PARAM_STR);
     $stmt->execute();
   }
 
@@ -50,11 +49,14 @@ class TextMessageControllor
     }else if($this->MessageText == "はい"){
       $TextMessageBuilder = new TextMessageBuilder("画像を投稿してください");
       $SendMessage->add($TextMessageBuilder);
-    }else if($this->MessageText == "ねえ"){
-      $TextMessageBuilder = new TextMessageBuilder("なに？^^");
+    }else if($this->MessageText == "ねえ" || $this->MessageText == "ねえ〜"){
+      $TextMessageBuilder = new TextMessageBuilder("なに？^^\nなんでも言ってね(-.-)b");
       $SendMessage->add($TextMessageBuilder);
     }else if($this->MessageText == "なあ"){
       $TextMessageBuilder = new TextMessageBuilder("なに？^o^");
+      $SendMessage->add($TextMessageBuilder);
+    }else if($this->MessageText == "よろ" || $this->MessageText == "よろ!" || $this->MessageText == "よろ！" || $this->MessageText == "よろ〜" || $this->MessageText == "よろー"){
+      $TextMessageBuilder = new TextMessageBuilder("よろしくね〜！！！");
       $SendMessage->add($TextMessageBuilder);
     }else if($this->MessageText == "ヘルシーなランチ教えて"){
       $TextMessageBuilder = new TextMessageBuilder("ここのイタリアンとかどう？\nhttp://www.r-hiro.com/\nもしくはここのスムージー http://blog.livedoor.jp/tako86_blog/archives/cat_179856.html");
@@ -120,6 +122,12 @@ class TextMessageControllor
         $SendMessage->add($TextMessageBuilder);
       }else if(strpos($this->MessageText, "だよね？") !== false){
         $TextMessageBuilder = new TextMessageBuilder("そうかも！");
+        $SendMessage->add($TextMessageBuilder);
+      }else if(strpos($this->MessageText, "help") !== false){
+        $TextMessageBuilder = new TextMessageBuilder("写真を送ったりしてみて");
+        $SendMessage->add($TextMessageBuilder);
+      }else if(strpos($this->MessageText, "github") !== false){
+        $TextMessageBuilder = new TextMessageBuilder("https://github.com/bokotomo/photo-messageai これだよ！");
         $SendMessage->add($TextMessageBuilder);
       }else if(strpos($this->MessageText, "ぽよ") !== false){
         $StickerMessage = new StickerMessageBuilder(2, 22);
@@ -187,7 +195,7 @@ class TextMessageControllor
       }else if(strpos($this->MessageText, "愛してる") !== false){
         $TextMessageBuilder = new TextMessageBuilder("私も！");
         $SendMessage->add($TextMessageBuilder);
-      }else if(strpos($this->MessageText, "よろしく") !== false){
+      }else if(strpos($this->MessageText, "よろしく") !== false || strpos($this->MessageText, "よろです") !== false || strpos($this->MessageText, "宜し") !== false){
         $TextMessageBuilder = new TextMessageBuilder("ありがと^^ よろしくね〜！");
         $SendMessage->add($TextMessageBuilder);
       }else if(strpos($this->MessageText, "おk") !== false || strpos($this->MessageText, "うす！") !== false || strpos($this->MessageText, "おk") !== false || strpos($this->MessageText, "おk") !== false){
@@ -199,7 +207,7 @@ class TextMessageControllor
         
         $v = rand(0,2);
         if($v==0){
-          $TextMessageBuilder = new TextMessageBuilder("かわいい写真とか送ってよ=,=");
+          $TextMessageBuilder = new TextMessageBuilder("かわいい写真とか送ってほしいな=,=");
           $SendMessage->add($TextMessageBuilder);
         }
       }else{
@@ -222,7 +230,7 @@ class TextMessageControllor
           $SendMessage->add($TextMessageBuilder);
         }
         
-        $v = rand(0,12);
+        $v = rand(0,11);
         if($v==0){
           $TextMessageBuilder = new TextMessageBuilder("かわいい写真とか送ってよ〜");
           $SendMessage->add($TextMessageBuilder); 
