@@ -7,16 +7,22 @@ use Saya\MessageControllor\StickerMessageControllor;
 use Saya\MessageControllor\ImageMessageControllor;
 use Saya\MessageControllor\LocationMessageControllor;
 use TomoLib\DatabaseProvider;
+use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use \LINE\LINEBot;
+use TomoLib\DataLogger;
 
 class MainControllor
 {
   private $ReceiveData;
   private $ReplyToken;
   private $MessageType;
+  private $Bot;
   private $DatabaseProvider;
   private $UserId;
 
   public function __construct($ReceiveData){
+    $httpClient = new CurlHTTPClient(ACCESS_TOKEN);
+    $this->Bot = new LINEBot($httpClient, ['channelSecret' => SECRET_TOKEN]);
     $this->ReceiveData = $ReceiveData;
     $this->ReplyToken = $ReceiveData->events[0]->replyToken;
     $this->MessageType = $ReceiveData->events[0]->message->type;
@@ -28,6 +34,7 @@ class MainControllor
     if(!$this->checkUserLoginDone()){
       $this->addUser();
     }
+    $this->api_get_message_content_request($ReceiveData->events[0]->message->id);
   }
 
   private function checkUserLoginDone(){
@@ -44,6 +51,11 @@ class MainControllor
     $stmt->bindValue(':id', $this->UserId, \PDO::PARAM_STR);
     $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
     $stmt->execute();
+  }
+
+  public function api_get_message_content_request($message_id) {
+    $response = $this->Bot->getMessageContent($message_id);
+    file_put_contents("./tomo.jpg",$response->getRawBody());
   }
 
   public function responseMessage(){
