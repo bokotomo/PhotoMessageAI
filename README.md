@@ -21,6 +21,7 @@ Sayaさんは写真を扱ってくれるLineBotです。
 
     define("SECRET_TOKEN", "LINE's SECRET_TOKEN");  
     define("ACCESS_TOKEN", "LINE's ACCESS_TOKEN");
+    define("URL_ROOT_PATH", "using URL");
 
 ## Library
 <a href="https://github.com/line/line-bot-sdk-php">LineBotSDK-PHP</a>
