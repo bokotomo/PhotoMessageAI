@@ -7,6 +7,7 @@ use Saya\MessageControllor\StickerMessageControllor;
 use Saya\MessageControllor\ImageMessageControllor;
 use Saya\MessageControllor\LocationMessageControllor;
 use TomoLib\DatabaseProvider;
+use TomoLib\UploadProvider;
 use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use \LINE\LINEBot;
 use TomoLib\DataLogger;
