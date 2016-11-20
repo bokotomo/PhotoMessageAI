@@ -31,12 +31,13 @@ class ImageMessageControllor
     $this->ImgName = md5($this->UserId."_".$this->DatabaseProvider->getLastAutoIncrement("saya_upload_imgs")).".jpg";
     $this->insertDBUserUploadImages();
     $this->uploadIMGFile();
+    
   }
 
   public function insertDBUserUploadImages(){
     $stmt = $this->DatabaseProvider->runQuery("insert into saya_upload_imgs(user_id,img_url) values(:user_id, :img_url)");
     $stmt->bindValue(':user_id', $this->UserId, \PDO::PARAM_STR);
-    $stmt->bindValue(':img_url', URL_ROOT_PATH."/linebot/saya_photo/userimg/".$this->ImgName, \PDO::PARAM_STR);
+    $stmt->bindValue(':img_url', URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName, \PDO::PARAM_STR);
     $stmt->execute();
   }
 
@@ -48,8 +49,11 @@ class ImageMessageControllor
   }
 
   public function responseMessage(){
-    $OriginalContentSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/userimg/".$this->ImgName;
-    $PreviewImageSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/userimg/".$this->ImgName;
+    //$tmp="python ".ROOT_DIR_PATH."/opencvlib/tes.py ".ROOT_DIR_PATH."/userimg/".$this->ImgName." ".ROOT_DIR_PATH."/convimg/".$this->ImgName;
+    $tmp="sh ".ROOT_DIR_PATH."/opencvlib/t.sh ".ROOT_DIR_PATH."/userimg/".$this->ImgName." ".ROOT_DIR_PATH."/convimg/".$this->ImgName;
+    $te=system($tmp);
+    $OriginalContentSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName;
+    $PreviewImageSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName;
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
 
     $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？");
