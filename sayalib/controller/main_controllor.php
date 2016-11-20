@@ -34,7 +34,6 @@ class MainControllor
     if(!$this->checkUserLoginDone()){
       $this->addUser();
     }
-    echo $this->DatabaseProvider->getLastInsertId("saya_upload_imgs");
   }
 
   private function checkUserLoginDone(){

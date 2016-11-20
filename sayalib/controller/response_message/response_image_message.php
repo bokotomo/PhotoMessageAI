@@ -28,20 +28,19 @@ class ImageMessageControllor
 
     $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
 
-    $this->ImgName = $this->UserId."_".$this->DatabaseProvider->getLastInsertId("saya_upload_imgs").".jpg";
-    //$this->ImgName = md5()."_"date("YmdHis").".jpg"
-    $this->insertUserUploadImage();
-    $this->uploadImgFile();
+    $this->ImgName = md5($this->UserId."_".$this->DatabaseProvider->getLastAutoIncrement("saya_upload_imgs")).".jpg";
+    $this->insertDBUserUploadImages();
+    $this->uploadIMGFile();
   }
 
-  public function insertUserUploadImage(){
+  public function insertDBUserUploadImages(){
     $stmt = $this->DatabaseProvider->runQuery("insert into saya_upload_imgs(user_id,img_url) values(:user_id, :img_url)");
     $stmt->bindValue(':user_id', $this->UserId, \PDO::PARAM_STR);
     $stmt->bindValue(':img_url', URL_ROOT_PATH."/linebot/saya_photo/userimg/".$this->ImgName, \PDO::PARAM_STR);
     $stmt->execute();
   }
 
-  public function uploadImgFile(){
+  public function uploadIMGFile(){
     $response = $this->Bot->getMessageContent($this->MessageId);
     $UploadFileProvider = new UploadFileProvider();
     $FilePath = ROOT_DIR_PATH."/userimg/".$this->ImgName;
@@ -60,6 +59,6 @@ class ImageMessageControllor
     $message->add($ImageMessage);
     $response = $this->Bot->replyMessage($this->ReplyToken, $message);
   } 
- 
+
 }
 ?>
