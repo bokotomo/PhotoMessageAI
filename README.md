@@ -13,7 +13,7 @@ Sayaさんは写真を扱ってくれるLineBotです。
 
 ## できること
 1 会話(自動学習して新しいことばの組み合わせなど使う)  
-2 写真加工()  
+2 写真加工  
 3 他の友人に写真をアンケート  
 
 ## Getting started
@@ -24,5 +24,5 @@ Sayaさんは写真を扱ってくれるLineBotです。
     define("URL_ROOT_PATH", "using URL");
 
 ## Library
-<a href="https://github.com/line/line-bot-sdk-php">LineBotSDK-PHP</a>
+<a href="https://github.com/line/line-bot-sdk-php">LineBotSDK-PHP</a>  
 <a href="http://opencv.org/">http://opencv.org</a>
