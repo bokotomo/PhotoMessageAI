@@ -7,7 +7,6 @@ use Saya\MessageControllor\StickerMessageControllor;
 use Saya\MessageControllor\ImageMessageControllor;
 use Saya\MessageControllor\LocationMessageControllor;
 use TomoLib\DatabaseProvider;
-use TomoLib\UploadProvider;
 use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use \LINE\LINEBot;
 use TomoLib\DataLogger;
@@ -31,11 +30,11 @@ class MainControllor
     if(empty($this->UserId )){
       $this->UserId = "1";
     }
-    $this->DatabaseProvider = new DatabaseProvider("sqlite3", __DIR__."/../database/sayadb.sqlite3");
+    $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
     if(!$this->checkUserLoginDone()){
       $this->addUser();
     }
-    $this->api_get_message_content_request($ReceiveData->events[0]->message->id);
+    echo $this->DatabaseProvider->getLastInsertId("saya_upload_imgs");
   }
 
   private function checkUserLoginDone(){
@@ -52,11 +51,6 @@ class MainControllor
     $stmt->bindValue(':id', $this->UserId, \PDO::PARAM_STR);
     $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
     $stmt->execute();
-  }
-
-  public function api_get_message_content_request($message_id) {
-    $response = $this->Bot->getMessageContent($message_id);
-    file_put_contents("./tomo.jpg",$response->getRawBody());
   }
 
   public function responseMessage(){
