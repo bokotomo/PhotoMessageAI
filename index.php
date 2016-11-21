@@ -41,8 +41,12 @@ require_once(__DIR__."/vendor/autoload.php");
 require_once(__DIR__."/tomolib/autoload.php");
 require_once(__DIR__."/sayalib/autoload.php");
 
+if(isset($_SERVER["HTTP_".\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE])){
+  $Signature = $_SERVER["HTTP_".\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE]; 
+}else{
+  //exit(true);
+}
 $InputData = file_get_contents("php://input");
-$Signature = $_SERVER["HTTP_".\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 $HttpClient = new CurlHTTPClient(ACCESS_TOKEN);
 $Bot = new LINEBot($HttpClient, ['channelSecret' => SECRET_TOKEN]);
 $Events = $Bot->parseEventRequest($InputData, $Signature);
