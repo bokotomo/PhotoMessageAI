@@ -27,10 +27,14 @@
  * 2016 Fukumoto
  * E-mail : bokotomo@me.com
  */
- 
+
 use Saya\MainControllor;
 use TomoLib\DataLogger;
 use TomoLib\DatabaseProvider;
+use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use \LINE\LINEBot;
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
+use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
 
 require_once(__DIR__."/config.php");
 require_once(__DIR__."/vendor/autoload.php");
@@ -38,15 +42,20 @@ require_once(__DIR__."/tomolib/autoload.php");
 require_once(__DIR__."/sayalib/autoload.php");
 
 $InputData = file_get_contents("php://input");
-$ReceiveData = json_decode($InputData);
+$Signature = $_SERVER["HTTP_".\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
+$HttpClient = new CurlHTTPClient(ACCESS_TOKEN);
+$Bot = new LINEBot($HttpClient, ['channelSecret' => SECRET_TOKEN]);
+$Event = $Bot->parseEventRequest($InputData, $Signature);
 
-$MainControllor = new MainControllor($ReceiveData);
-$MainControllor->responseMessage();
+foreach($Event as $event){
+  $MainControllor = new MainControllor($Bot, $event);
+  $MainControllor->responseMessage();
 
-$DataLogger = new DataLogger();
-$DataLogger->setLogType("html");
-$DataLogger->setFilePath(__DIR__."/line.html");
-$DataLogger->setLogData($InputData);
-$DataLogger->outputLog();
+  $DataLogger = new DataLogger();
+  $DataLogger->setLogType("html");
+  $DataLogger->setFilePath(__DIR__."/line.html");
+  $DataLogger->setLogData($InputData);
+  $DataLogger->outputLog();
+}
 
 ?>
