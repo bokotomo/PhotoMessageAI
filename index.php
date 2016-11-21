@@ -45,9 +45,9 @@ $InputData = file_get_contents("php://input");
 $Signature = $_SERVER["HTTP_".\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 $HttpClient = new CurlHTTPClient(ACCESS_TOKEN);
 $Bot = new LINEBot($HttpClient, ['channelSecret' => SECRET_TOKEN]);
-$Event = $Bot->parseEventRequest($InputData, $Signature);
+$Events = $Bot->parseEventRequest($InputData, $Signature);
 
-foreach($Event as $event){
+foreach($Events as $event){
   $MainControllor = new MainControllor($Bot, $event);
   $MainControllor->responseMessage();
 

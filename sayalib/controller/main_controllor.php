@@ -6,9 +6,9 @@ use Saya\MessageControllor\TextMessageControllor;
 use Saya\MessageControllor\StickerMessageControllor;
 use Saya\MessageControllor\ImageMessageControllor;
 use Saya\MessageControllor\LocationMessageControllor;
-use TomoLib\DatabaseProvider;
 use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use \LINE\LINEBot;
+use TomoLib\DatabaseProvider;
 use TomoLib\DataLogger;
 
 class MainControllor
@@ -22,6 +22,8 @@ class MainControllor
     $this->Bot = $Bot;
     if(empty( $this->EventData->getUserId() )){
       $this->UserId = "1";
+    }else{
+      $this->UserId = $this->EventData->getUserId();
     }
     $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
     if(!$this->checkUserLoginDone()){
