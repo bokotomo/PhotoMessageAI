@@ -30,7 +30,7 @@ class StickerMessageControllor
   }
 
   private function addUserText(){
-    $stmt = $this->DatabaseProvider->runQuery("insert into user_text(user_id, text, date, type) values(:id, :text, :date, :type)");
+    $stmt = $this->DatabaseProvider->setSql("insert into user_text(user_id, text, date, type) values(:id, :text, :date, :type)");
     $stmt->bindValue(':id', $this->MessageUserId, \PDO::PARAM_STR);
     $stmt->bindValue(':text', $this->MessageStickerId.":".$this->MessagePackageId, \PDO::PARAM_STR);
     $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
@@ -39,15 +39,11 @@ class StickerMessageControllor
   }
 
   public function responseMessage(){
-    
     $StickerMessage = new StickerMessageBuilder(1, 2);
-    
     $message = new MultiMessageBuilder();
     $message->add($StickerMessage);
     $response = $this->Bot->replyMessage($this->ReplyToken, $message);
-    
     $this->addUserText();
-  }  
- 
-} 
+  }
+}
 ?>

@@ -26,7 +26,6 @@ class LocationMessageControllor
   }
 
   public function responseMessage(){
-
     $LocationName = $this->address;
     $LocationName = mb_convert_kana($LocationName, "na");
     $texttable = [
@@ -37,19 +36,17 @@ class LocationMessageControllor
     ];
     $LocationName = str_replace(array_keys($texttable), array_values($texttable), $LocationName);
     $LocationName = preg_replace("/[0-9]/", "", $LocationName);
-  
     $sendtext = $LocationName."を代表する写真はこれかな！^o^";
     $TextMessageBuilder = new TextMessageBuilder($sendtext);
-    
     $OriginalContentSSLUrl = "https://tomo.syo.tokyo/openimg/shibuya.jpg";
     $PreviewImageSSLUrl = "https://tomo.syo.tokyo/openimg/shibuya.jpg";
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
-    
+
     $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
     $message->add($ImageMessage);
     $response = $this->Bot->replyMessage($this->ReplyToken, $message);
-  }  
- 
+  }
+
 } 
 ?>
