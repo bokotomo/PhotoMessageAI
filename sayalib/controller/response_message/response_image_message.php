@@ -2,8 +2,6 @@
 namespace Saya\MessageControllor;
 
 use Saya\MessageControllor;
-use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
-use \LINE\LINEBot;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\MessageBuilder\ImageMessageBuilder;
 use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
@@ -12,20 +10,19 @@ use TomoLib\DatabaseProvider;
 
 class ImageMessageControllor
 {
-  private $ReplyToken;
+  private $EventData;
   private $Bot;
-  private $MessageId;
-  private $UserId;
   private $DatabaseProvider;
-  private $ImgName;
+  private $UserId;
 
-  public function __construct($ReplyToken, $ReceiveData){
-    $httpClient = new CurlHTTPClient(ACCESS_TOKEN);
-    $this->Bot = new LINEBot($httpClient, ['channelSecret' => SECRET_TOKEN]);
-    $this->ReplyToken = $ReplyToken;
-    $this->MessageId = $ReceiveData->events[0]->message->id;
-    $this->UserId = $ReceiveData->events[0]->source->userId;
-
+  public function __construct($Bot, $EventData){
+    $this->EventData = $EventData;
+    $this->Bot = $Bot;
+    if(empty( $this->EventData->getUserId() )){
+      $this->UserId = "1";
+    }else{
+      $this->UserId = $this->EventData->getUserId();
+    }
     $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
 
     $this->ImgName = md5($this->UserId."_".$this->DatabaseProvider->getLastAutoIncrement("saya_upload_imgs")).".jpg";
@@ -61,7 +58,7 @@ class ImageMessageControllor
     $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
     $message->add($ImageMessage);
-    $response = $this->Bot->replyMessage($this->ReplyToken, $message);
+    $response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $message);
   } 
 
 }

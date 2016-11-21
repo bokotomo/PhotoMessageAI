@@ -13,21 +13,14 @@ use TomoLib\DataLogger;
 
 class MainControllor
 {
-  private $ReceiveData;
-  private $ReplyToken;
-  private $MessageType;
+  private $EventData;
   private $Bot;
   private $DatabaseProvider;
-  private $UserId;
 
-  public function __construct($ReceiveData){
-    $httpClient = new CurlHTTPClient(ACCESS_TOKEN);
-    $this->Bot = new LINEBot($httpClient, ['channelSecret' => SECRET_TOKEN]);
-    $this->ReceiveData = $ReceiveData;
-    $this->ReplyToken = $ReceiveData->events[0]->replyToken;
-    $this->MessageType = $ReceiveData->events[0]->message->type;
-    $this->UserId = $ReceiveData->events[0]->source->userId;
-    if(empty($this->UserId )){
+  public function __construct($Bot, $EventData){
+    $this->EventData = $EventData;
+    $this->Bot = $Bot;
+    if(empty( $this->EventData->getUserId() )){
       $this->UserId = "1";
     }
     $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
@@ -54,19 +47,19 @@ class MainControllor
   }
 
   public function responseMessage(){
-    if($this->MessageType == "text"){
-      $TextMessageControllor = new TextMessageControllor($this->ReplyToken, $this->ReceiveData);
+    if($this->EventData instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage){
+      $TextMessageControllor = new TextMessageControllor($this->Bot, $this->EventData);
       $TextMessageControllor->responseMessage();
-    }else if($this->MessageType == "sticker"){
-      $StickerMessageControllor = new StickerMessageControllor($this->ReplyToken, $this->ReceiveData);
+    }else if($this->EventData instanceof \LINE\LINEBot\Event\MessageEvent\StickerMessage){
+      $StickerMessageControllor = new StickerMessageControllor($this->Bot, $this->EventData);
       $StickerMessageControllor->responseMessage();
-    }else if($this->MessageType == "image"){
-      $ImageMessageControllor = new ImageMessageControllor($this->ReplyToken, $this->ReceiveData);
+    }else if($this->EventData instanceof \LINE\LINEBot\Event\MessageEvent\ImageMessage){
+      $ImageMessageControllor = new ImageMessageControllor($this->Bot, $this->EventData);
       $ImageMessageControllor->responseMessage();
-    }else if($this->MessageType == "location"){
-      $LocationMessageControllor = new LocationMessageControllor($this->ReplyToken, $this->ReceiveData);
+    }else if($this->EventData instanceof \LINE\LINEBot\Event\MessageEvent\LocationMessage){
+      $LocationMessageControllor = new LocationMessageControllor($this->Bot, $this->EventData);
       $LocationMessageControllor->responseMessage();
     }
   }
-} 
+}
 ?>
