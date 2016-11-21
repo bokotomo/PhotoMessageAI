@@ -34,15 +34,15 @@ class DatabaseProvider
       $this->PDO = new PDO($dsn, $user, $password);
     }
   }
-  
-  public function runQuery($SqlStr){
+
+  public function setSql($SqlStr){
     $Stmt = $this->PDO->prepare($SqlStr);
     return $Stmt;
   }
 
   public function getLastAutoIncrement($TableName){
     if($this->SqlType == $this->NameSqlite){
-      $stmt = $this->runQuery("SELECT seq FROM sqlite_sequence where name = '{$TableName}'");
+      $stmt = $this->setSql("SELECT seq FROM sqlite_sequence where name = '{$TableName}'");
       $stmt->execute();
       while($row = $stmt -> fetch(PDO::FETCH_ASSOC)) {
         return ($row["seq"] + 1);
