@@ -37,7 +37,8 @@ class MainControllor
   }
 
   private function checkUserLoginDone(){
-    $stmt = $this->DatabaseProvider->runQuery("select * from user_info where user_id = '".$this->UserId."'");
+    $stmt = $this->DatabaseProvider->setSql("select * from user_info where user_id = :user_id");
+    $stmt->bindValue(':user_id', $this->UserId, \PDO::PARAM_STR);
     $stmt->execute();
     while($row = $stmt -> fetch(\PDO::FETCH_ASSOC)) {
       return true;
@@ -46,7 +47,7 @@ class MainControllor
   }
 
   private function addUser(){
-    $stmt = $this->DatabaseProvider->runQuery("insert into user_info(user_id,date) values(:id, :date)");
+    $stmt = $this->DatabaseProvider->setSql("insert into user_info(user_id,date) values(:id, :date)");
     $stmt->bindValue(':id', $this->UserId, \PDO::PARAM_STR);
     $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
     $stmt->execute();

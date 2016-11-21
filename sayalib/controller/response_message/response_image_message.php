@@ -35,7 +35,7 @@ class ImageMessageControllor
   }
 
   public function insertDBUserUploadImages(){
-    $stmt = $this->DatabaseProvider->runQuery("insert into saya_upload_imgs(user_id,img_url) values(:user_id, :img_url)");
+    $stmt = $this->DatabaseProvider->setSql("insert into saya_upload_imgs(user_id,img_url) values(:user_id, :img_url)");
     $stmt->bindValue(':user_id', $this->UserId, \PDO::PARAM_STR);
     $stmt->bindValue(':img_url', URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName, \PDO::PARAM_STR);
     $stmt->execute();
