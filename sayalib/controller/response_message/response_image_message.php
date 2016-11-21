@@ -39,7 +39,7 @@ class ImageMessageControllor
   }
 
   public function uploadIMGFile(){
-    $response = $this->Bot->getMessageContent($this->MessageId);
+    $response = $this->Bot->getMessageContent($this->EventData->getMessageId());
     $UploadFileProvider = new UploadFileProvider();
     $FilePath = ROOT_DIR_PATH."/userimg/".$this->ImgName;
     $UploadFileProvider->uploadFileData($FilePath, $response->getRawBody());
