@@ -16,6 +16,9 @@ class MainControllor
   private $EventData;
   private $Bot;
   private $DatabaseProvider;
+  private $UserName;
+  private $UserImageUrl;
+  private $UserText;
 
   public function __construct($Bot, $EventData){
     $this->EventData = $EventData;
@@ -27,6 +30,7 @@ class MainControllor
     }
     $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
     if(!$this->checkUserLoginDone()){
+      $this->setUserData();
       $this->addUser();
     }
   }
@@ -41,10 +45,23 @@ class MainControllor
     return false;
   }
 
+  private function setUserData(){
+    $Response = $this->Bot->getProfile($this->EventData->getUserId());
+    if ($Response->isSucceeded()) {
+        $Profile = $Response->getJSONDecodedBody();
+        $this->UserName = $Profile['displayName'];
+        $this->UserImageUrl = $Profile['pictureUrl'];
+        $this->UserText = $Profile['statusMessage'];
+    }
+  }
+
   private function addUser(){
-    $stmt = $this->DatabaseProvider->setSql("insert into user_info(user_id,date) values(:id, :date)");
+    $stmt = $this->DatabaseProvider->setSql("insert into user_info(user_id,date,user_name,user_image,user_text) values(:id, :date, :username, :userimage, :usertext)");
     $stmt->bindValue(':id', $this->UserId, \PDO::PARAM_STR);
     $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
+    $stmt->bindValue(':username', $this->UserName, \PDO::PARAM_STR);
+    $stmt->bindValue(':userimage', $this->UserImageUrl, \PDO::PARAM_STR);
+    $stmt->bindValue(':usertext', $this->UserText, \PDO::PARAM_STR);
     $stmt->execute();
   }
 
