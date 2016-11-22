@@ -30,5 +30,4 @@ class DataLogger
       file_put_contents($this->FilePath, $Current);
     }
   }
-} 
-?>
+}

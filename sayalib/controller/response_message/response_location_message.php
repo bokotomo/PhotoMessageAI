@@ -48,5 +48,4 @@ class LocationMessageControllor
     $response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $Message);
   }
 
-} 
-?>
+}

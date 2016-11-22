@@ -12,9 +12,6 @@ class UploadFileProvider
   public function uploadFileData($FilePath, $FileData){
     touch($FilePath);
     file_put_contents($FilePath, $FileData);
-    //system("chmod 755 ".$FileData);
-    //chmod($FilePath, 755);
   }
 
-} 
-?>
+}

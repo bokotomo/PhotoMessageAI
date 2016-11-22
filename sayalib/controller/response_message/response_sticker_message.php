@@ -37,4 +37,3 @@ class StickerMessageControllor
     $this->addUserText();
   }
 }
-?>

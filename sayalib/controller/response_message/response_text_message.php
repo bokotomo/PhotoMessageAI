@@ -262,5 +262,4 @@ class TextMessageControllor
     $this->addUserText();
   }  
  
-} 
-?>
+}

@@ -60,4 +60,3 @@ if(isset($_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE])){
     $DataLogger->outputLog();
   }
 }
-?>
