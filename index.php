@@ -35,31 +35,29 @@ use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use \LINE\LINEBot;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
+use \LINE\LINEBot\Constant\HTTPHeader;
 
 require_once(__DIR__."/config.php");
 require_once(__DIR__."/vendor/autoload.php");
 require_once(__DIR__."/tomolib/autoload.php");
 require_once(__DIR__."/sayalib/autoload.php");
 
-if(isset($_SERVER["HTTP_".\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE])){
-  $Signature = $_SERVER["HTTP_".\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE]; 
-}else{
-  //exit(true);
-}
 $InputData = file_get_contents("php://input");
 $HttpClient = new CurlHTTPClient(ACCESS_TOKEN);
 $Bot = new LINEBot($HttpClient, ['channelSecret' => SECRET_TOKEN]);
-$Events = $Bot->parseEventRequest($InputData, $Signature);
+if(isset($_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE])){
+  $Signature = $_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE]; 
+  $Events = $Bot->parseEventRequest($InputData, $Signature);
 
-foreach($Events as $event){
-  $MainControllor = new MainControllor($Bot, $event);
-  $MainControllor->responseMessage();
-
-  $DataLogger = new DataLogger();
-  $DataLogger->setLogType("html");
-  $DataLogger->setFilePath(__DIR__."/line.html");
-  $DataLogger->setLogData($InputData);
-  $DataLogger->outputLog();
+  foreach($Events as $event){
+    $MainControllor = new MainControllor($Bot, $event);
+    $MainControllor->responseMessage();
+  
+    $DataLogger = new DataLogger();
+    $DataLogger->setLogType("html");
+    $DataLogger->setFilePath(__DIR__."/line.html");
+    $DataLogger->setLogData($InputData);
+    $DataLogger->outputLog();
+  }
 }
-
 ?>
