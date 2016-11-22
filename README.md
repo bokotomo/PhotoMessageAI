@@ -29,6 +29,13 @@ sayalib Folder is program that response saya's conversation
 tomolib Folder is program class that is written me  
 vendor Folder is program that is line-sdk-php  
 
+## Using
+PHP  
+PYTHON  
+OpenCV  
+mecab  
+
+
 ## Library
 <a href="https://github.com/line/line-bot-sdk-php">LineBotSDK-PHP</a>  
 <a href="http://opencv.org/">http://opencv.org</a>
