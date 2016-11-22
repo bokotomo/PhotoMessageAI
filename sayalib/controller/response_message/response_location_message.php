@@ -11,19 +11,15 @@ class LocationMessageControllor
   private $EventData;
   private $Bot;
   private $DatabaseProvider;
-  private $UserId;
+  private $UserData;
   private $latitude;
   private $longitude;
   private $address;
 
-  public function __construct($Bot, $EventData){
+  public function __construct($Bot, $EventData, $UserData){
     $this->EventData = $EventData;
     $this->Bot = $Bot;
-    if(empty( $this->EventData->getUserId() )){
-      $this->UserId = "1";
-    }else{
-      $this->UserId = $this->EventData->getUserId();
-    }
+    $this->UserData = $UserData;
     $this->latitude = $this->EventData->getLatitude();
     $this->longitude = $this->EventData->getLongitude();
     $this->address = $this->EventData->getAddress();

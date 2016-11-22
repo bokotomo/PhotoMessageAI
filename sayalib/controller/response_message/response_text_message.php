@@ -12,22 +12,18 @@ class TextMessageControllor
   private $EventData;
   private $Bot;
   private $DatabaseProvider;
-  private $UserId;
+  private $UserData;
 
-  public function __construct($Bot, $EventData){
+  public function __construct($Bot, $EventData, $UserData){
     $this->EventData = $EventData;
     $this->Bot = $Bot;
-    if(empty( $this->EventData->getUserId() )){
-      $this->UserId = "1";
-    }else{
-      $this->UserId = $this->EventData->getUserId();
-    }
+    $this->UserData = $UserData;
     $this->DatabaseProvider = new DatabaseProvider("sqlite3", __DIR__."/../../database/sayadb.sqlite3");
   }
 
   private function addUserText(){
     $stmt = $this->DatabaseProvider->setSql("insert into user_text(user_id, text, date, type) values(:id, :text, :date, :type)");
-    $stmt->bindValue(':id', $this->UserId, \PDO::PARAM_STR);
+    $stmt->bindValue(':id', $this->UserData["user_id"], \PDO::PARAM_STR);
     $stmt->bindValue(':text', $this->EventData->getText(), \PDO::PARAM_STR);
     $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
     $stmt->bindValue(':type', "text", \PDO::PARAM_STR);

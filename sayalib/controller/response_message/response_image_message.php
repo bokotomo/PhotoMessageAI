@@ -13,27 +13,21 @@ class ImageMessageControllor
   private $EventData;
   private $Bot;
   private $DatabaseProvider;
-  private $UserId;
+  private $UserData;
 
-  public function __construct($Bot, $EventData){
+  public function __construct($Bot, $EventData, $UserData){
     $this->EventData = $EventData;
     $this->Bot = $Bot;
-    if(empty( $this->EventData->getUserId() )){
-      $this->UserId = "1";
-    }else{
-      $this->UserId = $this->EventData->getUserId();
-    }
+    $this->UserData = $UserData;
     $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
-
-    $this->ImgName = md5($this->UserId."_".$this->DatabaseProvider->getLastAutoIncrement("saya_upload_imgs")).".jpg";
+    $this->ImgName = md5($this->UserData["user_id"]."_".$this->DatabaseProvider->getLastAutoIncrement("saya_upload_imgs")).".jpg";
     $this->insertDBUserUploadImages();
     $this->uploadIMGFile();
-    
   }
 
   public function insertDBUserUploadImages(){
     $stmt = $this->DatabaseProvider->setSql("insert into saya_upload_imgs(user_id,img_url) values(:user_id, :img_url)");
-    $stmt->bindValue(':user_id', $this->UserId, \PDO::PARAM_STR);
+    $stmt->bindValue(':user_id', $this->UserData["user_id"], \PDO::PARAM_STR);
     $stmt->bindValue(':img_url', URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName, \PDO::PARAM_STR);
     $stmt->execute();
   }
