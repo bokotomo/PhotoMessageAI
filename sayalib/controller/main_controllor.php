@@ -26,7 +26,7 @@ class MainControllor
     }else{
       $this->UserData["user_id"] = $this->EventData->getUserId();
     }
-    $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
+    $this->DatabaseProvider = new DatabaseProvider("sqlite3", SQLITE_DATABASE_PATH."/sayadb.sqlite3");
     if(!$this->checkUserLoginDone()){
       $this->setUserData();
       $this->addUser();

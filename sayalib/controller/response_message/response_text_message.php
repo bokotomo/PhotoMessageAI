@@ -18,7 +18,7 @@ class TextMessageControllor
     $this->EventData = $EventData;
     $this->Bot = $Bot;
     $this->UserData = $UserData;
-    $this->DatabaseProvider = new DatabaseProvider("sqlite3", __DIR__."/../../database/sayadb.sqlite3");
+    $this->DatabaseProvider = new DatabaseProvider("sqlite3", SQLITE_DATABASE_PATH."/sayadb.sqlite3");
   }
 
   private function addUserText(){

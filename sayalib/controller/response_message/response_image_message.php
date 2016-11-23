@@ -19,7 +19,7 @@ class ImageMessageControllor
     $this->EventData = $EventData;
     $this->Bot = $Bot;
     $this->UserData = $UserData;
-    $this->DatabaseProvider = new DatabaseProvider("sqlite3", ROOT_DIR_PATH."/sayalib/database/sayadb.sqlite3");
+    $this->DatabaseProvider = new DatabaseProvider("sqlite3", SQLITE_DATABASE_PATH."/sayadb.sqlite3");
     $this->ImgName = md5($this->UserData["user_id"]."_".$this->DatabaseProvider->getLastAutoIncrement("saya_upload_imgs")).".jpg";
     $this->insertDBUserUploadImages();
     $this->uploadIMGFile();
@@ -40,14 +40,13 @@ class ImageMessageControllor
   }
 
   public function responseMessage(){
-    //$tmp="python ".ROOT_DIR_PATH."/opencvlib/tes.py ".ROOT_DIR_PATH."/userimg/".$this->ImgName." ".ROOT_DIR_PATH."/convimg/".$this->ImgName;
-    $tmp="sh ".ROOT_DIR_PATH."/opencvlib/t.sh ".ROOT_DIR_PATH."/userimg/".$this->ImgName." ".ROOT_DIR_PATH."/convimg/".$this->ImgName;
-    $te=system($tmp);
+    $SellRunStr = "sh ".ROOT_DIR_PATH."/image_converter/response_image.sh ".ROOT_DIR_PATH."/userimg/".$this->ImgName." ".ROOT_DIR_PATH."/convimg/".$this->ImgName;
+    $Res = system($SellRunStr);
     $OriginalContentSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName;
     $PreviewImageSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName;
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
 
-    $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？");
+    $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？".$Res);
 
     $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
