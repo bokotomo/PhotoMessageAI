@@ -24,12 +24,14 @@ Sayaさんは写真を扱ってくれるLineBotです。
     define("URL_ROOT_PATH", "using URL");
 
 2 image_converter run python script so you set Python's PATH that can run OpenCV , to apacheUser.
-Method 1
+Method 1  
     
     you add this code to response.sh
     export PATH=PYTHON'SPATH:$PATH
 
-Method 2
+Method 2  
+    
+    you add PYTHON'SPATH to apacheUser
 
 ## FolderDescription
 image_converter Folder is program that convert image by python and OpenCV  
