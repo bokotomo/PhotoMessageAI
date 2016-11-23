@@ -38,11 +38,11 @@ require_once(__DIR__."/vendor/autoload.php");
 require_once(__DIR__."/library/tomolib/autoload.php");
 require_once(__DIR__."/library/sayalib/autoload.php");
 
-$InputData = file_get_contents("php://input");
-$HttpClient = new CurlHTTPClient(ACCESS_TOKEN);
-$Bot = new LINEBot($HttpClient, ['channelSecret' => SECRET_TOKEN]);
 if(isset($_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE])){
+  $InputData = file_get_contents("php://input");
   $Signature = $_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE]; 
+  $HttpClient = new CurlHTTPClient(ACCESS_TOKEN);
+  $Bot = new LINEBot($HttpClient, ['channelSecret' => SECRET_TOKEN]);
   $Events = $Bot->parseEventRequest($InputData, $Signature);
 
   foreach($Events as $event){
