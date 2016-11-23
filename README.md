@@ -23,6 +23,14 @@ Sayaさんは写真を扱ってくれるLineBotです。
     define("ACCESS_TOKEN", "LINE's ACCESS_TOKEN");
     define("URL_ROOT_PATH", "using URL");
 
+2 image_converter run python script so you set Python's PATH that can run OpenCV , to apacheUser.
+Method 1
+    
+    you add this code to response.sh
+    export PATH=PYTHON'SPATH:$PATH
+
+Method 2
+
 ## FolderDescription
 image_converter Folder is program that convert image by python and OpenCV  
 sayalib Folder is program that response saya's conversation  
