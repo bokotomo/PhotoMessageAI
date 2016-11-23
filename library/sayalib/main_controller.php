@@ -32,7 +32,7 @@ class MainControllor
     }else{
       $this->UserData["user_id"] = $this->EventData->getUserId();
     }
-    $this->DatabaseProvider = new DatabaseProvider("sqlite3", LOCAL_DATABASE_PATH."/sayadb.sqlite3");
+    $this->DatabaseProvider = new DatabaseProvider(SQL_TYPE, LOCAL_DATABASE_PATH."/sayadb.sqlite3");
     if(!$this->checkUserLoginDone()){
       $this->setUserData();
       $this->addUser();

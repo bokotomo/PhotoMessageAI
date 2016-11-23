@@ -8,9 +8,9 @@ except ImportError:
 
 def convertImageData(OriginImg):
 # ConvImg = cv2.cvtColor(OriginImg, cv2.COLOR_BGR2RGB)
-#   ConvImg = convertThreshold(OriginImg)
+#  ConvImg = convertThreshold(OriginImg)
 #  ConvImg = convertBlur(OriginImg)
-#   ConvImg = convertMorph(OriginImg)
+#  ConvImg = convertMorph(OriginImg, 4)
 #  ConvImg = convertLine(OriginImg)
   ConvImg = convertCascadeClassifier(OriginImg)
   return ConvImg
@@ -33,9 +33,9 @@ def convertBlur(OriginImg):
   filtered = cv2.GaussianBlur(OriginImg, (15, 15), 0)
   return filtered
 
-def convertMorph(OriginImg):
+def convertMorph(OriginImg, Value):
   ImgSize = OriginImg.shape
-  kernel = np.ones((20, 20),np.uint8)
+  kernel = np.ones((Value, Value),np.uint8)
   opened = cv2.morphologyEx(OriginImg, cv2.MORPH_OPEN, kernel, iterations=2)
   return opened
 
@@ -52,6 +52,7 @@ def convertCascadeClassifier(OriginImg):
   face_cascade = cv2.CascadeClassifier('/usr/local/src/opencv-3.1.0/data/haarcascades/haarcascade_frontalface_default.xml')
   eye_cascade = cv2.CascadeClassifier('/usr/local/src/opencv-3.1.0/data/haarcascades/haarcascade_eye.xml')
   gray = cv2.cvtColor(ConvImg, cv2.COLOR_BGR2GRAY)
+  gray = convertMorph(ConvImg, 3)
   faces = face_cascade.detectMultiScale(gray, 1.3, 5)
   for (x,y,w,h) in faces:
     cv2.rectangle(ConvImg,(x,y),(x+w,y+h),(0,200,250),10)

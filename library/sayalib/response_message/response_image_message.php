@@ -19,7 +19,7 @@ class ImageMessageControllor
     $this->EventData = $EventData;
     $this->Bot = $Bot;
     $this->UserData = $UserData;
-    $this->DatabaseProvider = new DatabaseProvider("sqlite3", LOCAL_DATABASE_PATH."/sayadb.sqlite3");
+    $this->DatabaseProvider = new DatabaseProvider(SQL_TYPE, LOCAL_DATABASE_PATH."/sayadb.sqlite3");
     $this->ImgName = md5($this->UserData["user_id"]."_".$this->DatabaseProvider->getLastAutoIncrement("saya_upload_imgs")).".jpg";
     $this->insertDBUserUploadImages();
     $this->uploadIMGFile();
@@ -50,7 +50,7 @@ class ImageMessageControllor
     $OriginalContentSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/images/convimg/".$this->ImgName;
     $PreviewImageSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/images/convimg/".$this->ImgName;
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
-    $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？");
+    $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？".$Res);
 
     $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
