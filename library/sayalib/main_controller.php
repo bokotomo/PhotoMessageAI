@@ -24,6 +24,7 @@ class MainControllor
   private $UserData;
 
   public function __construct($Bot, $EventData){
+    $this->outputLog();
     $this->EventData = $EventData;
     $this->Bot = $Bot;
     if(empty( $this->EventData->getUserId() )){
@@ -66,6 +67,14 @@ class MainControllor
     $stmt->bindValue(':userimage', $this->UserData["UserImageUrl"], \PDO::PARAM_STR);
     $stmt->bindValue(':usertext', $this->UserData["UserText"], \PDO::PARAM_STR);
     $stmt->execute();
+  }
+  
+  private function outputLog(){
+    $DataLogger = new DataLogger();
+    $DataLogger->setLogType("html");
+    $DataLogger->setFilePath(LOCAL_LOG_PATH."/line.html");
+    $DataLogger->setLogData(file_get_contents("php://input"));
+    $DataLogger->outputLog();
   }
 
   public function responseMessage(){

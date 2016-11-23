@@ -29,12 +29,8 @@
  */
 
 use Saya\MainControllor;
-use TomoLib\DataLogger;
-use TomoLib\DatabaseProvider;
 use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use \LINE\LINEBot;
-use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
-use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
 use \LINE\LINEBot\Constant\HTTPHeader;
 
 require_once(__DIR__."/config.php");
@@ -52,11 +48,5 @@ if(isset($_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE])){
   foreach($Events as $event){
     $MainControllor = new MainControllor($Bot, $event);
     $MainControllor->responseMessage();
-  
-    $DataLogger = new DataLogger();
-    $DataLogger->setLogType("html");
-    $DataLogger->setFilePath(__DIR__."/log/line.html");
-    $DataLogger->setLogData($InputData);
-    $DataLogger->outputLog();
   }
 }
