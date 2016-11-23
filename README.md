@@ -26,7 +26,7 @@ Sayaさんは写真を扱ってくれるLineBotです。
 2 image_converter run python script so you set Python's PATH that can run OpenCV , to apacheUser.  
 Method 1  
     
-    you add this code to response.sh
+    you add this code to ./image_converter/response.sh
     export PATH=PYTHON'S PATH:$PATH
 
 Method 2  

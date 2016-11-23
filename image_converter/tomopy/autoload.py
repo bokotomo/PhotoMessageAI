@@ -1,3 +1,1 @@
-# -*- coding: utf-8 -*-
-
-import opencv_image_converter.opencv_provider
+import tomopy.opencv_image_converter.opencv_provider as opencv_provider
