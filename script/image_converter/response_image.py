@@ -11,5 +11,5 @@ inputFilePath = args[1]
 outputFilePath = args[2]
 
 img = cv2.imread(inputFilePath)
-gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 cv2.imwrite(outputFilePath, gray)
