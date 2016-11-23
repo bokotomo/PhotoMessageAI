@@ -19,34 +19,38 @@ class ImageMessageControllor
     $this->EventData = $EventData;
     $this->Bot = $Bot;
     $this->UserData = $UserData;
-    $this->DatabaseProvider = new DatabaseProvider("sqlite3", SQLITE_DATABASE_PATH."/sayadb.sqlite3");
+    $this->DatabaseProvider = new DatabaseProvider("sqlite3", LOCAL_DATABASE_PATH."/sayadb.sqlite3");
     $this->ImgName = md5($this->UserData["user_id"]."_".$this->DatabaseProvider->getLastAutoIncrement("saya_upload_imgs")).".jpg";
     $this->insertDBUserUploadImages();
     $this->uploadIMGFile();
   }
 
   public function insertDBUserUploadImages(){
-    $stmt = $this->DatabaseProvider->setSql("insert into saya_upload_imgs(user_id,img_url) values(:user_id, :img_url)");
+    $stmt = $this->DatabaseProvider->setSql("insert into saya_upload_imgs(user_id,origin_img_url,conv_img_url) values(:user_id, :origin_url, :conv_url)");
     $stmt->bindValue(':user_id', $this->UserData["user_id"], \PDO::PARAM_STR);
-    $stmt->bindValue(':img_url', URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName, \PDO::PARAM_STR);
+    $stmt->bindValue(':origin_url', URL_ROOT_PATH."/linebot/saya_photo/images/userimg/".$this->ImgName, \PDO::PARAM_STR);
+    $stmt->bindValue(':conv_url', URL_ROOT_PATH."/linebot/saya_photo/images/convimg/".$this->ImgName, \PDO::PARAM_STR);
     $stmt->execute();
   }
 
   public function uploadIMGFile(){
     $response = $this->Bot->getMessageContent($this->EventData->getMessageId());
     $UploadFileProvider = new UploadFileProvider();
-    $FilePath = ROOT_DIR_PATH."/userimg/".$this->ImgName;
+    $FilePath = LOCAL_IMAGES_PATH."/userimg/".$this->ImgName;
     $UploadFileProvider->uploadFileData($FilePath, $response->getRawBody());
   }
 
   public function responseMessage(){
-    $SellRunStr = "sh ".ROOT_DIR_PATH."/image_converter/response_image.sh ".ROOT_DIR_PATH."/userimg/".$this->ImgName." ".ROOT_DIR_PATH."/convimg/".$this->ImgName;
-    $Res = system($SellRunStr);
-    $OriginalContentSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName;
-    $PreviewImageSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/convimg/".$this->ImgName;
-    $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
+    $RunScriptPath = LOCAL_SCRIPT_PATH."/image_converter/response_image.sh";
+    $LocalUserimgPath = LOCAL_IMAGES_PATH."/userimg/".$this->ImgName;
+    $LocalConvimgPath = LOCAL_IMAGES_PATH."/convimg/".$this->ImgName;
+    $ShellRunStr = "sh {$RunScriptPath} {$LocalUserimgPath} {$LocalConvimgPath}";
+    $Res = system($ShellRunStr);
 
-    $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？".$Res);
+    $OriginalContentSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/images/convimg/".$this->ImgName;
+    $PreviewImageSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/images/convimg/".$this->ImgName;
+    $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
+    $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？");
 
     $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);

@@ -1,6 +1,11 @@
 <?php
 namespace Saya;
 
+require_once(__DIR__."/response_message/response_text_message.php");
+require_once(__DIR__."/response_message/response_image_message.php");
+require_once(__DIR__."/response_message/response_sticker_message.php");
+require_once(__DIR__."/response_message/response_location_message.php");
+
 use Saya;
 use Saya\MessageControllor\TextMessageControllor;
 use Saya\MessageControllor\StickerMessageControllor;
@@ -26,7 +31,7 @@ class MainControllor
     }else{
       $this->UserData["user_id"] = $this->EventData->getUserId();
     }
-    $this->DatabaseProvider = new DatabaseProvider("sqlite3", SQLITE_DATABASE_PATH."/sayadb.sqlite3");
+    $this->DatabaseProvider = new DatabaseProvider("sqlite3", LOCAL_DATABASE_PATH."/sayadb.sqlite3");
     if(!$this->checkUserLoginDone()){
       $this->setUserData();
       $this->addUser();

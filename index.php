@@ -39,8 +39,8 @@ use \LINE\LINEBot\Constant\HTTPHeader;
 
 require_once(__DIR__."/config.php");
 require_once(__DIR__."/vendor/autoload.php");
-require_once(__DIR__."/tomolib/autoload.php");
-require_once(__DIR__."/sayalib/autoload.php");
+require_once(__DIR__."/library/tomolib/autoload.php");
+require_once(__DIR__."/library/sayalib/autoload.php");
 
 $InputData = file_get_contents("php://input");
 $HttpClient = new CurlHTTPClient(ACCESS_TOKEN);
@@ -55,7 +55,7 @@ if(isset($_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE])){
   
     $DataLogger = new DataLogger();
     $DataLogger->setLogType("html");
-    $DataLogger->setFilePath(__DIR__."/line.html");
+    $DataLogger->setFilePath(__DIR__."/log/line.html");
     $DataLogger->setLogData($InputData);
     $DataLogger->outputLog();
   }
