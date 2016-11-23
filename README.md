@@ -10,6 +10,7 @@ Sayaさんは写真を扱ってくれるLineBotです。
 ## DemoImage
 <img src="https://tomo.syo.tokyo/openimg/5219767428574.LINE.jpg" width="200px">
 <img src="https://tomo.syo.tokyo/openimg/5219756900962.LINE.jpg" width="200px">  
+<img src="https://tomo.syo.tokyo/openimg/5249198785297.LINE.jpg" width="200px">  
 
 ## できること
 1 会話(自動学習して新しいことばの組み合わせなど使う)  
@@ -23,11 +24,11 @@ Sayaさんは写真を扱ってくれるLineBotです。
     define("ACCESS_TOKEN", "LINE's ACCESS_TOKEN");
     define("URL_ROOT_PATH", "using URL");
 
-2 image_converter run python script so you set Python's PATH that can run OpenCV , to apacheUser.  
+2 ./script/image_converter run python script, So you must set Python's PATH that can run OpenCV, to apacheUser's $PATH.  
 Method 1  
     
-    you add this code to ./image_converter/response.sh
-    export PATH=PYTHON'S PATH:$PATH
+    you add this code to ./script/image_converter/response_image.sh
+    export PATH=(PYTHON'S PATH):$PATH
 
 Method 2  
     
