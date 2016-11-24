@@ -44,13 +44,13 @@ Method 1
 PHP 7.0.12  
 Python 3.6.0b3  
 C++  
-OpenCV'3.1.0'  
-mecab0.996  
+OpenCV '3.1.0'  
+MeCab 0.996  
 
 
 ## Library
 <a href="https://github.com/line/line-bot-sdk-php">LineBotSDK-PHP</a>  
-<a href="http://opencv.org/">opencv</a>  
-<a href="http://opencv.jp/opencv-2svn/cpp/index.html">opencv japan</a>  
-<a href="http://taku910.github.io/mecab/#usage-tools">mecab</a>  
+<a href="http://opencv.org/">OpenCV</a>  
+<a href="http://opencv.jp/opencv-2svn/cpp/index.html">OpenCV japan</a>  
+<a href="http://taku910.github.io/mecab/">MeCab</a>  
 

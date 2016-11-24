@@ -1,1 +1,1 @@
-g++ test.cpp -O2 `mecab-config --cflags` `mecab-config --libs`
+g++ test.cpp -O2 `mecab-config --cflags` `mecab-config --libs` 

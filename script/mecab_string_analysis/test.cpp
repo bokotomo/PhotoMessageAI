@@ -20,6 +20,8 @@ int main (int argc, char **argv) {
   CHECK(tagger);
   const char *result = tagger->parse(input);
   std::cout << result; 
+  
+  
 
   // Dictionary info.
   std::cout << "--------------------" << std::endl;
