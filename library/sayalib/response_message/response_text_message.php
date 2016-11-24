@@ -24,7 +24,6 @@ class TextMessageControllor
     $this->UserData = $UserData;
     $this->DatabaseProvider = new DatabaseProvider(SQL_TYPE, LOCAL_DATABASE_PATH."/sayadb.sqlite3");
     $this->Text = $this->EventData->getText();
-    
   }
 
   private function addUserText(){
@@ -43,7 +42,17 @@ class TextMessageControllor
       $this->VerbPurpose = "WantToKnow";
     }else if(strpos($Text, "送") !== false || strpos($Text, "見") !== false || strpos($Text, "ある") !== false){
       $this->VerbPurpose = "WantToSend";
-    }else if(strpos($Text, "送") !== false || strpos($Text, "見") !== false || strpos($Text, "ある") !== false){
+    }else if(strpos($Text, "載") !== false || strpos($Text, "のっけ") !== false){
+      $this->VerbPurpose = "WantToShareOnSNS";
+    }else if($Text == "し"){
+      if($this->NounPurpose == "加工"){
+        $this->VerbPurpose = "WantToShareOnSNS";
+      }else if($this->NounPurpose == "シェア"){
+        $this->VerbPurpose = "WantToShareOnSNS";
+      }else if($this->NounPurpose == "食事"){
+        $this->VerbPurpose = "WantToGoMeal";
+      }
+    }else if(strpos($Text, "変えて") !== false){
       $this->VerbPurpose = "WantToConvertImage";
     }else if(strpos($Text, "だよね") !== false){
       $this->VerbPurpose = "WantToEmpathy";
@@ -246,7 +255,7 @@ class TextMessageControllor
         }
       }else if($content[1] == "動詞"){
         if($content[2] == "自立"){
-          $this->analysisAutonomousVerb($Text);
+          $this->analysisAutonomousVerb($content[0]);
         }else if($content[2] == "接尾"){
         }else if($content[2] == "非自立"){
         }
@@ -293,21 +302,33 @@ class TextMessageControllor
       }else{
         $this->UserPurpose = "何を知りたいの？";
       }
+      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
+      $SendMessage->add($TextMessageBuilder);
     }else if($this->VerbPurpose == "WantToSend"){
       $this->UserPurpose = $this->NounPurpose."を送ってほしいの？";
+      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
+      $SendMessage->add($TextMessageBuilder);
     }else if($this->VerbPurpose == "WantToDoWith"){
       $this->UserPurpose = $this->NounPurpose."したいの？";
+      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
+      $SendMessage->add($TextMessageBuilder);
     }else if($this->VerbPurpose == "WantToConvertImage"){
       $this->UserPurpose = "いいよ！写真送って";
+      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
+      $SendMessage->add($TextMessageBuilder);
+    }else if($this->VerbPurpose == "WantToShareOnSNS"){
+      $this->UserPurpose = "なら送ってくれた写真を綺麗にするね！";
+      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
+      $SendMessage->add($TextMessageBuilder);
     }else{
-      $this->UserPurpose = $this->responseUnkwonText($Text);
-    }
-    $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
-    $SendMessage->add($TextMessageBuilder);
-
-    $CertainMessageBuilder = $this->responseCertainText($Text);
-    if(!empty($CertainMessageBuilder)){
-      $SendMessage->add($CertainMessageBuilder);
+      $CertainMessageBuilder = $this->responseCertainText($Text);
+      if(!empty($CertainMessageBuilder)){
+        $SendMessage->add($CertainMessageBuilder);
+      }else{
+        $this->UserPurpose = $this->responseUnkwonText($Text);
+        $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
+        $SendMessage->add($TextMessageBuilder);
+      }
     }
 
     return $SendMessage;
@@ -329,5 +350,5 @@ class TextMessageControllor
     $Response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $SendMessage);
     $this->addUserText();
   }  
- 
+
 }
