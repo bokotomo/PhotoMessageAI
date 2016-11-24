@@ -14,6 +14,7 @@ class TextMessageControllor
   private $DatabaseProvider;
   private $UserData;
   private $Text;
+  private $UserPurpose;
 
   public function __construct($Bot, $EventData, $UserData){
     $this->EventData = $EventData;
@@ -46,6 +47,12 @@ class TextMessageControllor
     $TextArray = $this->convertTextArray($Res);
     $TextMessageBuilder = new TextMessageBuilder(json_encode($TextArray));
     //$SendMessage->add($TextMessageBuilder); 
+    
+    $UserPurpose;
+    $WantToKnow = false;
+    $WantToSend = false;
+    $WantToDoWith = false;
+    $WantObject = "";
 
     foreach($TextArray as $content){
       if($content[1] == "接頭詞"){
@@ -58,42 +65,39 @@ class TextMessageControllor
         if($content[2] == "固有名詞"){
           if($content[3] == "地域"){
             if($content[4] == "一般"){
-              $TextMessageBuilder = new TextMessageBuilder($content[0]."っていい場所だよね！");
-              $SendMessage->add($TextMessageBuilder);
+              $WantObject = $content[0];
             }else if($content[4] == "国"){
-              $TextMessageBuilder = new TextMessageBuilder($content[0]."か！私は行ったことないかな");
-              $SendMessage->add($TextMessageBuilder);
+              $WantObject = $content[0];
             }
           }else if($content[3] == "人名"){
             if($content[4] == "一般"){
-              $TextMessageBuilder = new TextMessageBuilder($content[0]."さんか！私も知ってる！");
-              $SendMessage->add($TextMessageBuilder);
+              $WantObject = $content[0];
             }else if($content[4] == "姓"){
-              $TextMessageBuilder = new TextMessageBuilder($content[0]."さんか！私も知ってる！");
-              $SendMessage->add($TextMessageBuilder);
+              $WantObject = $content[0];
             }else if($content[4] == "名"){
-              $TextMessageBuilder = new TextMessageBuilder($content[0]."さんね！私も知ってる！");
-              $SendMessage->add($TextMessageBuilder);
+              $WantObject = $content[0];
             }
           }else if($content[3] == "一般"){
-            $TextMessageBuilder = new TextMessageBuilder($content[0]."!");
-            $SendMessage->add($TextMessageBuilder);
+            $WantObject = $content[0];
           }else if($content[3] == "組織"){
-            $TextMessageBuilder = new TextMessageBuilder($content[0]."!");
-            $SendMessage->add($TextMessageBuilder);
+            $WantObject = $content[0];
           }
         }else if($content[2] == "一般"){
-          $TextMessageBuilder = new TextMessageBuilder($content[0]."か〜");
-          $SendMessage->add($TextMessageBuilder);
+          $WantObject = $content[0];
         }else if($content[2] == "サ変接続"){
-          $TextMessageBuilder = new TextMessageBuilder($content[0]."したい！");
-          $SendMessage->add($TextMessageBuilder);
+          $WantObject = $content[0];
         }else if($content[2] == "接尾"){
-          $TextMessageBuilder = new TextMessageBuilder($content[0]."したい！");
-          $SendMessage->add($TextMessageBuilder);
+          $WantObject = $content[0];
         }
       }else if($content[1] == "動詞"){
         if($content[2] == "自立"){
+          if(strpos($Text, "行") !== false){
+            $WantToDoWith = true;
+          }else if(strpos($Text, "教") !== false || strpos($Text, "知") !== false || strpos($Text, "しっ") !== false){
+            $WantToKnow = true;
+          }else if(strpos($Text, "送") !== false || strpos($Text, "見") !== false || strpos($Text, "ある") !== false){
+            $WantToSend = true;
+          }
         }else if($content[2] == "接尾"){
         }else if($content[2] == "非自立"){
         }
@@ -133,6 +137,16 @@ class TextMessageControllor
       }else if($content[1] == "フィラー"){
       }
     }
+
+    if($WantToKnow){
+      $UserPurpose = $WantObject."を知りたいの？";
+    }else if($WantToSend){
+      $UserPurpose = $WantObject."を送ってほしいの？";
+    }else if($WantToDoWith){
+      $UserPurpose = $WantObject."したいの？";
+    }
+    $TextMessageBuilder = new TextMessageBuilder($UserPurpose);
+    $SendMessage->add($TextMessageBuilder);
 
     if($Text == "投票" || $Text == "とうひょう" || $Text == "選ぶ" || $Text == "みたい" || $Text == "写真" || $Text == "送って" || $Text == "おくって"){
       $StickerMessage = new StickerMessageBuilder(1, 2);    
