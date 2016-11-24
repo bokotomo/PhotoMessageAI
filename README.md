@@ -50,5 +50,7 @@ mecab0.996
 
 ## Library
 <a href="https://github.com/line/line-bot-sdk-php">LineBotSDK-PHP</a>  
-<a href="http://opencv.org/">http://opencv.org</a>  
-<a href="http://opencv.jp/opencv-2svn/cpp/index.html">http://opencv.jp/opencv-2svn/cpp/index.html</a>  
+<a href="http://opencv.org/">opencv</a>  
+<a href="http://opencv.jp/opencv-2svn/cpp/index.html">opencv japan</a>  
+<a href="http://taku910.github.io/mecab/#usage-tools">mecab</a>  
+

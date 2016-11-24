@@ -29,6 +29,10 @@ def convertThreshold(OriginImg):
   merged = np.minimum(drop_back, clarify_born)
   return merged
 
+def convertNega(OriginImg):
+  ConvImg = cv2.cvtColor(OriginImg, cv2.COLOR_BGR2RGB)
+  return ConvImg
+
 def convertBlur(OriginImg):
   filtered = cv2.GaussianBlur(OriginImg, (15, 15), 0)
   return filtered
