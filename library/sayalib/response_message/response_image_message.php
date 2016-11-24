@@ -5,6 +5,11 @@ use Saya\MessageControllor;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\MessageBuilder\ImageMessageBuilder;
 use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder;
+use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use TomoLib\UploadFileProvider;
 use TomoLib\DatabaseProvider;
 
@@ -40,6 +45,28 @@ class ImageMessageControllor
     $UploadFileProvider->uploadFileData($FilePath, $response->getRawBody());
   }
 
+  private function chooseCarouselFilter(){
+    $col = new CarouselColumnTemplateBuilder('Good appearance', "景色の見栄えを良くするフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
+        new MessageTemplateActionBuilder('決定', "ok!")
+    ]);
+    $CarouselColumnTemplates[] = $col;
+    
+    $col = new CarouselColumnTemplateBuilder('Fantastic', "景色を幻想的にするフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
+        new MessageTemplateActionBuilder('決定', "ok!")
+    ]);
+    $CarouselColumnTemplates[] = $col;
+    
+    $col = new CarouselColumnTemplateBuilder('Pro', "一眼レフカメラフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
+        new MessageTemplateActionBuilder('決定', "ok!")
+    ]);
+    $CarouselColumnTemplates[] = $col;
+    
+    $carouselTemplateBuilder = new CarouselTemplateBuilder($CarouselColumnTemplates);
+    $templateMessage = new TemplateMessageBuilder('Good appearance or Fantastic or Pro', $carouselTemplateBuilder);
+  
+    return $templateMessage;
+  }
+
   public function responseMessage(){
     $RunScriptPath = LOCAL_SCRIPT_PATH."/image_converter/response_image.sh";
     $LocalUserimgPath = LOCAL_IMAGES_PATH."/userimg/".$this->ImgName;
@@ -50,11 +77,14 @@ class ImageMessageControllor
     $OriginalContentSSLUrl = URL_ROOT_PATH."/images/convimg/".$this->ImgName;
     $PreviewImageSSLUrl = URL_ROOT_PATH."/images/convimg/".$this->ImgName;
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
-    $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？".$Res);
+    $TextMessageBuilder = new TextMessageBuilder("景色の画像だね！この辺りが良さそう！".$Res);
 
+    $TemplateMessage = $this->chooseCarouselFilter();
+    
     $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
-    $message->add($ImageMessage);
+//    $message->add($ImageMessage);
+    $message->add($TemplateMessage);
     $response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $message);
   } 
 
