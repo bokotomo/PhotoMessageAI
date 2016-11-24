@@ -34,17 +34,21 @@ Method 1
 
 ## FolderDescription
 ./script/image_converter Folder is program that convert image by python and OpenCV  
+./script/mecab_string_analysis Folder is program that analys user's text  
 ./library/sayalib Folder is program that response saya's conversation  
 ./library/tomolib Folder is program class that is written me  
 ./vendor Folder is program that is line-sdk-php  
 
+
 ## Using
-PHP7  
-PYTHON3  
-OpenCV3  
-mecab  
+PHP 7.0.12  
+Python 3.6.0b3  
+C++  
+OpenCV'3.1.0'  
+mecab0.996  
 
 
 ## Library
 <a href="https://github.com/line/line-bot-sdk-php">LineBotSDK-PHP</a>  
-<a href="http://opencv.org/">http://opencv.org</a>
+<a href="http://opencv.org/">http://opencv.org</a>  
+<a href="http://opencv.jp/opencv-2svn/cpp/index.html">http://opencv.jp/opencv-2svn/cpp/index.html</a>  

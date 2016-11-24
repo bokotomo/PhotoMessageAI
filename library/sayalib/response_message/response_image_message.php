@@ -28,8 +28,8 @@ class ImageMessageControllor
   public function insertDBUserUploadImages(){
     $stmt = $this->DatabaseProvider->setSql("insert into saya_upload_imgs(user_id,origin_img_url,conv_img_url) values(:user_id, :origin_url, :conv_url)");
     $stmt->bindValue(':user_id', $this->UserData["user_id"], \PDO::PARAM_STR);
-    $stmt->bindValue(':origin_url', URL_ROOT_PATH."/linebot/saya_photo/images/userimg/".$this->ImgName, \PDO::PARAM_STR);
-    $stmt->bindValue(':conv_url', URL_ROOT_PATH."/linebot/saya_photo/images/convimg/".$this->ImgName, \PDO::PARAM_STR);
+    $stmt->bindValue(':origin_url', URL_ROOT_PATH."/images/userimg/".$this->ImgName, \PDO::PARAM_STR);
+    $stmt->bindValue(':conv_url', URL_ROOT_PATH."/images/convimg/".$this->ImgName, \PDO::PARAM_STR);
     $stmt->execute();
   }
 
@@ -47,8 +47,8 @@ class ImageMessageControllor
     $ShellRunStr = "sh {$RunScriptPath} {$LocalUserimgPath} {$LocalConvimgPath}";
     $Res = system($ShellRunStr);
 
-    $OriginalContentSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/images/convimg/".$this->ImgName;
-    $PreviewImageSSLUrl = URL_ROOT_PATH."/linebot/saya_photo/images/convimg/".$this->ImgName;
+    $OriginalContentSSLUrl = URL_ROOT_PATH."/images/convimg/".$this->ImgName;
+    $PreviewImageSSLUrl = URL_ROOT_PATH."/images/convimg/".$this->ImgName;
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
     $TextMessageBuilder = new TextMessageBuilder("こういうのはどう？".$Res);
 
