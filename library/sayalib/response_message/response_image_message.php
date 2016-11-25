@@ -32,10 +32,11 @@ class ImageMessageControllor
   }
 
   public function insertDBUserUploadImages(){
-    $stmt = $this->DatabaseProvider->setSql("insert into saya_upload_imgs(user_id,origin_img_url,conv_img_url) values(:user_id, :origin_url, :conv_url)");
+    $stmt = $this->DatabaseProvider->setSql("insert into saya_upload_imgs(user_id,origin_img_url,conv_img_url,img_name) values(:user_id, :origin_url, :conv_url, :img_name)");
     $stmt->bindValue(':user_id', $this->UserData["user_id"], \PDO::PARAM_STR);
     $stmt->bindValue(':origin_url', URL_ROOT_PATH."/images/userimg/".$this->ImgName, \PDO::PARAM_STR);
     $stmt->bindValue(':conv_url', URL_ROOT_PATH."/images/convimg/".$this->ImgName, \PDO::PARAM_STR);
+    $stmt->bindValue(':img_name', $this->ImgName, \PDO::PARAM_STR);
     $stmt->execute();
   }
 
@@ -69,22 +70,10 @@ class ImageMessageControllor
   }
 
   public function responseMessage(){
-    $RunScriptPath = LOCAL_SCRIPT_PATH."/image_converter/response_image.sh";
-    $LocalUserimgPath = LOCAL_IMAGES_PATH."/userimg/".$this->ImgName;
-    $LocalConvimgPath = LOCAL_IMAGES_PATH."/convimg/".$this->ImgName;
-    $ShellRunStr = "sh {$RunScriptPath} {$LocalUserimgPath} {$LocalConvimgPath}";
-    $Res = system($ShellRunStr);
-
-    $OriginalContentSSLUrl = URL_ROOT_PATH."/images/convimg/".$this->ImgName;
-    $PreviewImageSSLUrl = URL_ROOT_PATH."/images/convimg/".$this->ImgName;
-    $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
-    $TextMessageBuilder = new TextMessageBuilder("景色の画像だね！この辺りが良さそう！".$Res);
-
+    $TextMessageBuilder = new TextMessageBuilder("景色の画像だね！この辺りが良さそう！");
     $TemplateMessage = $this->chooseCarouselFilter();
-    
     $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
-//    $message->add($ImageMessage);
     $message->add($TemplateMessage);
     $response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $message);
   } 
