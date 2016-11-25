@@ -60,17 +60,17 @@ class ImageMessageControllor
   }
 
   private function chooseCarouselHumanFilter(){
-    $col = new CarouselColumnTemplateBuilder('Good appearance', "人の見栄えを良くするフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
+    $col = new CarouselColumnTemplateBuilder('Good appearance', "人の見栄えを良くするフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
         new PostbackTemplateActionBuilder('決定', "imgtype=appearance&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
     
-    $col = new CarouselColumnTemplateBuilder('Fantastic', "人を幻想的にするフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
+    $col = new CarouselColumnTemplateBuilder('Fantastic', "人を幻想的にするフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
         new PostbackTemplateActionBuilder('決定', "imgtype=fantastic&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
     
-    $col = new CarouselColumnTemplateBuilder('Pro', "一眼レフカメラフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
+    $col = new CarouselColumnTemplateBuilder('Pro', "一眼レフカメラフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
         new PostbackTemplateActionBuilder('決定', "imgtype=pro&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
@@ -87,8 +87,8 @@ class ImageMessageControllor
     $ShellRunStr = "sh {$RunScriptPath} {$LocalUserimgPath}";
     $Res = system($ShellRunStr);
     $AnalizeData = json_decode($Res);
-    if($AnalizeData->human_num > 1){
-      $TextMessageBuilder = new TextMessageBuilder("人の画像だね！この辺りが良さそう！");
+    if($AnalizeData->human_num > 0){
+      $TextMessageBuilder = new TextMessageBuilder("人の画像だね！この辺りとかどう？");
       $TemplateMessage = $this->chooseCarouselHumanFilter();
     }else{
       $TextMessageBuilder = new TextMessageBuilder("景色の画像だね！この辺りが良さそう！");
