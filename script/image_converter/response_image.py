@@ -6,7 +6,13 @@ try:
 except ImportError:
   print("import error")
 
-def convertImageData(OriginImg):
+def convertImageData(OriginImg, imgType):
+  if imgType == "appearance":
+    ConvImg = convertGamma(OriginImg, 1.5)
+  elif imgType == "fantastic":
+    ConvImg = cv2.cvtColor(OriginImg, cv2.COLOR_BGR2RGB)
+  elif imgType == "pro":
+    ConvImg = convertMorph(OriginImg)
 # ConvImg = cv2.cvtColor(OriginImg, cv2.COLOR_BGR2RGB)
 #  ConvImg = convertThreshold(OriginImg)
 #  ConvImg = convertBlur(OriginImg)
@@ -14,7 +20,6 @@ def convertImageData(OriginImg):
 #  ConvImg = convertLine(OriginImg)
 #  ConvImg = convertCascadeClassifier(OriginImg)
 #  ConvImg = convertSaturation(OriginImg)
-  ConvImg = convertGamma(OriginImg, 1.5)
 #  ConvImg = convert2(OriginImg)
   return ConvImg
 
@@ -98,7 +103,8 @@ def convertForIn(OriginImg):
 args = sys.argv
 inputFilePath = args[1]
 outputFilePath = args[2]
+imgType = args[3]
 
 OriginImg = cv2.imread(inputFilePath)
-ConvImg = convertImageData(OriginImg)
+ConvImg = convertImageData(OriginImg, imgType)
 cv2.imwrite(outputFilePath, ConvImg)
