@@ -12,7 +12,10 @@ def convertImageData(OriginImg):
 #  ConvImg = convertBlur(OriginImg)
 #  ConvImg = convertMorph(OriginImg, 4)
 #  ConvImg = convertLine(OriginImg)
-  ConvImg = convertCascadeClassifier(OriginImg)
+#  ConvImg = convertCascadeClassifier(OriginImg)
+#  ConvImg = convertSaturation(OriginImg)
+  ConvImg = convertGamma(OriginImg, 1.5)
+#  ConvImg = convert2(OriginImg)
   return ConvImg
 
 def convertThreshold(OriginImg):
@@ -65,6 +68,31 @@ def convertCascadeClassifier(OriginImg):
     eyes = eye_cascade.detectMultiScale(roi_gray)
     for (ex,ey,ew,eh) in eyes:
       cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(110,110,240),10)
+  return ConvImg
+
+def convertHSV(OriginImg):
+  ConvImg = OriginImg
+  ConvImg = cv2.cvtColor(ConvImg, cv2.COLOR_BGR2HSV)
+  return ConvImg
+
+def convertGamma(OriginImg, GammaValue):
+  ConvImg = OriginImg
+  gamma = GammaValue
+  look_up_table = np.ones((256, 1), dtype = 'uint8' ) * 0
+  for i in range(256):
+    look_up_table[i][0] = 255 * pow(float(i) / 255, 1.0 / gamma)
+  ConvImg = cv2.LUT(ConvImg, look_up_table)
+  return ConvImg
+
+def convertForIn(OriginImg):
+  ConvImg = OriginImg
+  Height = ConvImg.shape[0]
+  Width = ConvImg.shape[1]
+  for x in range(Width):
+    for y in range(Height):
+      ConvImg[y, x, 0] = OriginImg[y, x, 0]
+      ConvImg[y, x, 1] = OriginImg[y, x, 1]
+      ConvImg[y, x, 2] = OriginImg[y, x, 2]
   return ConvImg
 
 args = sys.argv

@@ -9,6 +9,7 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder;
 use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 use LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use TomoLib\UploadFileProvider;
 use TomoLib\DatabaseProvider;
@@ -47,17 +48,17 @@ class ImageMessageControllor
 
   private function chooseCarouselFilter(){
     $col = new CarouselColumnTemplateBuilder('Good appearance', "景色の見栄えを良くするフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
-        new MessageTemplateActionBuilder('決定', "ok!")
+        new PostbackTemplateActionBuilder('決定', "imgtype=appearance")
     ]);
     $CarouselColumnTemplates[] = $col;
     
     $col = new CarouselColumnTemplateBuilder('Fantastic', "景色を幻想的にするフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
-        new MessageTemplateActionBuilder('決定', "ok!")
+        new PostbackTemplateActionBuilder('決定', "imgtype=fantastic")
     ]);
     $CarouselColumnTemplates[] = $col;
     
     $col = new CarouselColumnTemplateBuilder('Pro', "一眼レフカメラフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
-        new MessageTemplateActionBuilder('決定', "ok!")
+        new PostbackTemplateActionBuilder('決定', "imgtype=pro")
     ]);
     $CarouselColumnTemplates[] = $col;
     
