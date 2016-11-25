@@ -10,9 +10,9 @@ def convertImageData(OriginImg, imgType):
   if imgType == "appearance":
     ConvImg = convertGamma(OriginImg, 1.5)
   elif imgType == "fantastic":
-    ConvImg = cv2.cvtColor(OriginImg, cv2.COLOR_BGR2RGB)
+    ConvImg = convertMorph(OriginImg, 4)
   elif imgType == "pro":
-    ConvImg = convertMorph(OriginImg)
+    ConvImg = convertThreshold(OriginImg)
 # ConvImg = cv2.cvtColor(OriginImg, cv2.COLOR_BGR2RGB)
 #  ConvImg = convertThreshold(OriginImg)
 #  ConvImg = convertBlur(OriginImg)

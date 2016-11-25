@@ -38,14 +38,15 @@ class PostBackMessageControllor
     }
     $ImgType = $PostArray["imgtype"];
     $ImgName = $PostArray["img"];
+    $ConvImgName = explode(".", $ImgName)[0]."_".$ImgType.".".explode(".", $ImgName)[1];
     $RunScriptPath = LOCAL_SCRIPT_PATH."/image_converter/response_image.sh";
     $LocalUserimgPath = LOCAL_IMAGES_PATH."/userimg/".$ImgName;
-    $LocalConvimgPath = LOCAL_IMAGES_PATH."/convimg/".$ImgName;
+    $LocalConvimgPath = LOCAL_IMAGES_PATH."/convimg/".$ConvImgName;
     $ShellRunStr = "sh {$RunScriptPath} {$LocalUserimgPath} {$LocalConvimgPath} {$ImgType}";
     $Res = system($ShellRunStr);
 
     $OriginalContentSSLUrl = URL_ROOT_PATH."/images/convimg/".$ImgName;
-    $PreviewImageSSLUrl = URL_ROOT_PATH."/images/convimg/".$ImgName;
+    $PreviewImageSSLUrl = URL_ROOT_PATH."/images/convimg/".$ConvImgName;
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
     $Message = new MultiMessageBuilder();
     $Message->add($ImageMessage);
