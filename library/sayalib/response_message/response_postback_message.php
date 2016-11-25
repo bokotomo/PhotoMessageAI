@@ -31,9 +31,10 @@ class PostBackMessageControllor
 
   public function responseMessage(){
     $PostArrayKey = explode("&", $this->EventData->getPostbackData());
-    $PostArray = array();
-    foreach($PostArrayKey as $val){
-      array_push($PostArray, explode("=", $val));
+    foreach($PostArrayKey as $v){
+      $key = explode("=", $v)[0];
+      $val = explode("=", $v)[1];
+      $PostArray[$key] = $val;
     }
     $ImgType = $PostArray["imgtype"];
     $ImgName = $PostArray["img"];
@@ -46,11 +47,8 @@ class PostBackMessageControllor
     $OriginalContentSSLUrl = URL_ROOT_PATH."/images/convimg/".$ImgName;
     $PreviewImageSSLUrl = URL_ROOT_PATH."/images/convimg/".$ImgName;
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
-
-    $TextMessageBuilder = new TextMessageBuilder("景色の画像だね！この辺りが良さそう！".$ShellRunStr);
-    $message = new MultiMessageBuilder();
-    $message->add($TextMessageBuilder);
-    $message->add($ImageMessage);
-    $response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $message);
+    $Message = new MultiMessageBuilder();
+    $Message->add($ImageMessage);
+    $response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $Message);
   }
 }
