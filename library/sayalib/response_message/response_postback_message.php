@@ -29,34 +29,28 @@ class PostBackMessageControllor
     $this->DatabaseProvider = new DatabaseProvider(SQL_TYPE, LOCAL_DATABASE_PATH."/sayadb.sqlite3");
   }
 
-  private function getImgInfo(){
-    $stmt = $this->DatabaseProvider->setSql("select * from saya_upload_imgs where user_id = :user_id");
-    $stmt->bindValue(':user_id', $this->UserData["user_id"], \PDO::PARAM_STR);
-    $stmt->execute();
-    $Array = array();
-    while($row = $stmt -> fetch(\PDO::FETCH_ASSOC)) {
-      $Array = $row;
-    }
-    return $Array;
-  }
-
   public function responseMessage(){
-    $PostArray = explode("=", $this->EventData->getPostbackData());
-    $ImgType = $PostArray[1];
-    $ImgArray = getImgInfo();
+    $PostArrayKey = explode("&", $this->EventData->getPostbackData());
+    $PostArray = array();
+    foreach($PostArrayKey as $val){
+      array_push($PostArray, explode("=", $val));
+    }
+    $ImgType = $PostArray["imgtype"];
+    $ImgName = $PostArray["img"];
     $RunScriptPath = LOCAL_SCRIPT_PATH."/image_converter/response_image.sh";
-    $LocalUserimgPath = LOCAL_IMAGES_PATH."/userimg/".$ImgArray["img_name"];
-    $LocalConvimgPath = LOCAL_IMAGES_PATH."/convimg/".$ImgArray["img_name"];
-    $FilterType = $ImgType;
-    $ShellRunStr = "sh {$RunScriptPath} {$LocalUserimgPath} {$LocalConvimgPath} {$FilterType}";
+    $LocalUserimgPath = LOCAL_IMAGES_PATH."/userimg/".$ImgName;
+    $LocalConvimgPath = LOCAL_IMAGES_PATH."/convimg/".$ImgName;
+    $ShellRunStr = "sh {$RunScriptPath} {$LocalUserimgPath} {$LocalConvimgPath} {$ImgType}";
     $Res = system($ShellRunStr);
 
-    $OriginalContentSSLUrl = URL_ROOT_PATH."/images/convimg/".$this->ImgName;
-    $PreviewImageSSLUrl = URL_ROOT_PATH."/images/convimg/".$this->ImgName;
+    $OriginalContentSSLUrl = URL_ROOT_PATH."/images/convimg/".$ImgName;
+    $PreviewImageSSLUrl = URL_ROOT_PATH."/images/convimg/".$ImgName;
     $ImageMessage = new ImageMessageBuilder($OriginalContentSSLUrl, $PreviewImageSSLUrl);
-    $TextMessageBuilder = new TextMessageBuilder("景色の画像だね！この辺りが良さそう！".$ImgType."!");
+
+    $TextMessageBuilder = new TextMessageBuilder("景色の画像だね！この辺りが良さそう！".$ShellRunStr);
     $message = new MultiMessageBuilder();
     $message->add($TextMessageBuilder);
+    $message->add($ImageMessage);
     $response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $message);
   }
 }

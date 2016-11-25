@@ -49,17 +49,17 @@ class ImageMessageControllor
 
   private function chooseCarouselFilter(){
     $col = new CarouselColumnTemplateBuilder('Good appearance', "景色の見栄えを良くするフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
-        new PostbackTemplateActionBuilder('決定', "imgtype=appearance")
+        new PostbackTemplateActionBuilder('決定', "imgtype=appearance&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
     
     $col = new CarouselColumnTemplateBuilder('Fantastic', "景色を幻想的にするフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
-        new PostbackTemplateActionBuilder('決定', "imgtype=fantastic")
+        new PostbackTemplateActionBuilder('決定', "imgtype=fantastic&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
     
     $col = new CarouselColumnTemplateBuilder('Pro', "一眼レフカメラフィルター", "https://tomo.syo.tokyo/openimg/car.jpg", [
-        new PostbackTemplateActionBuilder('決定', "imgtype=pro")
+        new PostbackTemplateActionBuilder('決定', "imgtype=pro&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
     
