@@ -38,6 +38,8 @@ class TextMessageControllor
   private function analysisAutonomousVerb($Text){
     if(strpos($Text, "行") !== false){
       $this->VerbPurpose = "WantToDoWith";
+    }else if(strpos($Text, "食べ") !== false || strpos($Text, "食") !== false || strpos($Text, "たべ") !== false){
+      $this->VerbPurpose = "WantToEat";
     }else if(strpos($Text, "教") !== false || strpos($Text, "知") !== false || strpos($Text, "しっ") !== false){
       $this->VerbPurpose = "WantToKnow";
     }else if(strpos($Text, "送") !== false || strpos($Text, "見") !== false || strpos($Text, "ある") !== false){
@@ -314,6 +316,10 @@ class TextMessageControllor
       $SendMessage->add($TextMessageBuilder);
     }else if($this->VerbPurpose == "WantToConvertImage"){
       $this->UserPurpose = "いいよ！写真送って";
+      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
+      $SendMessage->add($TextMessageBuilder);
+    }else if($this->VerbPurpose == "WantToEat"){
+      $this->UserPurpose = $this->NounPurpose."たべたいの？";
       $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
       $SendMessage->add($TextMessageBuilder);
     }else if($this->VerbPurpose == "WantToShareOnSNS"){
