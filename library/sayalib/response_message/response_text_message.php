@@ -140,8 +140,12 @@ class TextMessageControllor
         $ResponseMessageBuilder = new TextMessageBuilder("ちょっと難しいかも>,<");
       }else if(strpos($Text, "いいね") !== false){
         $ResponseMessageBuilder = new TextMessageBuilder("ありがと^^");
+      }else if(strpos($Text, "良い") !== false || strpos($Text, "いい") !== false || strpos($Text, "よい") !== false){
+        $ResponseMessageBuilder = new TextMessageBuilder("お！ありがと☆^^");
       }else if(strpos($Text, "退屈") !== false){
         $ResponseMessageBuilder = new TextMessageBuilder("遊ぼうよ＝");
+      }else if(strpos($Text, "怖い") !== false || strpos($Text, "こわい") !== false){
+        $ResponseMessageBuilder = new TextMessageBuilder("え！怖かった？");
       }else if(strpos($Text, "はじめまして") !== false){
         $ResponseMessageBuilder = new TextMessageBuilder("こちらこそはじめまして^^ よろしくおねがします！");
       }else if(strpos($Text, "了解") !== false || strpos($Text, "りょうかい") !== false){
@@ -355,6 +359,5 @@ class TextMessageControllor
     $SendMessage = $this->analysisText($this->Text);
     $Response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $SendMessage);
     $this->addUserText();
-  }  
-
+  }
 }
