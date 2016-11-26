@@ -60,18 +60,40 @@ class ImageMessageControllor
   }
 
   private function chooseCarouselHumanFilter(){
+    $col = new CarouselColumnTemplateBuilder('Pro', "一眼レフカメラフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
+        new PostbackTemplateActionBuilder('決定', "imgtype=pro&img=".$this->ImgName)
+    ]);
+    $CarouselColumnTemplates[] = $col;
+
     $col = new CarouselColumnTemplateBuilder('Good appearance', "人の見栄えを良くするフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
         new PostbackTemplateActionBuilder('決定', "imgtype=appearance&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
     
-    $col = new CarouselColumnTemplateBuilder('Fantastic', "人を幻想的にするフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
+    $col = new CarouselColumnTemplateBuilder('Fantastic', "幻想的にするフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
         new PostbackTemplateActionBuilder('決定', "imgtype=fantastic&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
     
+    $carouselTemplateBuilder = new CarouselTemplateBuilder($CarouselColumnTemplates);
+    $templateMessage = new TemplateMessageBuilder('Good appearance or Fantastic or Pro', $carouselTemplateBuilder);
+  
+    return $templateMessage;
+  }
+
+  private function chooseCarouselManyHumanFilter(){
+
+    $col = new CarouselColumnTemplateBuilder('Good appearance', "複数人でも全員の見栄えが良くなるフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
+        new PostbackTemplateActionBuilder('決定', "imgtype=appearance&img=".$this->ImgName)
+    ]);
+    $CarouselColumnTemplates[] = $col;
+
     $col = new CarouselColumnTemplateBuilder('Pro', "一眼レフカメラフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
         new PostbackTemplateActionBuilder('決定', "imgtype=pro&img=".$this->ImgName)
+    ]);
+    $CarouselColumnTemplates[] = $col;
+    $col = new CarouselColumnTemplateBuilder('Fantastic', "幻想的にするフィルター", "https://tomo.syo.tokyo/openimg/human.jpg", [
+        new PostbackTemplateActionBuilder('決定', "imgtype=fantastic&img=".$this->ImgName)
     ]);
     $CarouselColumnTemplates[] = $col;
     
@@ -87,10 +109,13 @@ class ImageMessageControllor
     $ShellRunStr = "sh {$RunScriptPath} {$LocalUserimgPath}";
     $Res = system($ShellRunStr);
     $AnalizeData = json_decode($Res);
-    if($AnalizeData->human_num > 0){
+    if($AnalizeData->human_num == 1){
       $TextMessageBuilder = new TextMessageBuilder("人の画像だね！この辺りとかどう？");
       $TemplateMessage = $this->chooseCarouselHumanFilter();
-    }else{
+    }else if($AnalizeData->human_num > 1){
+      $TextMessageBuilder = new TextMessageBuilder("複数人の画像だね！こういうのはどう？");
+      $TemplateMessage = $this->chooseCarouselManyHumanFilter();
+    }else if($AnalizeData->human_num == 0){
       $TextMessageBuilder = new TextMessageBuilder("景色の画像だね！この辺りが良さそう！");
       $TemplateMessage = $this->chooseCarouselSceneryFilter();
     }
