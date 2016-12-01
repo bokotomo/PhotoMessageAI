@@ -1,6 +1,6 @@
 # Aki - LineBot
 Akiさんは写真を扱ってくれるLineBotです。  
-写真の加工や、写真を送ると他の人に意見を聞いてくれたり、画像を検索をしてくれたりします。
+写真の加工や、写真を送ると他の人に意見を聞いてくれたり、画像を検索をしてくれたりします。  
 ユーザは画像編集を考えなくてもAkiが自動的に目的に合わせて編集をやってくれます。  
 
 自動学習して賢くなっていきます。  
@@ -10,7 +10,6 @@ Akiさんは写真を扱ってくれるLineBotです。
 <a href="https://line.me/R/ti/p/%40hxs4046d"><img height="36" border="0" alt="友だち追加" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"></a>
 
 ## DemoImage
-<img src="https://tomo.syo.tokyo/openimg/5219767428574.LINE.jpg" width="180px">
 <img src="https://tomo.syo.tokyo/openimg/5283374059498.LINE.jpg" width="180px">
 <img src="https://tomo.syo.tokyo/openimg/5249198785297.LINE.jpg" width="180px">
 <img src="https://tomo.syo.tokyo/openimg/5249388613463.LINE.jpg" width="180px">  
