@@ -1,23 +1,25 @@
-# Saya - LineBot
-Sayaさんは写真を扱ってくれるLineBotです。  
-写真の加工や、写真を送ると他の人に意見を聞いてくれたり、画像を検索をしてくれたりします。  
+# Aki - LineBot
+Akiさんは写真を扱ってくれるLineBotです。  
+写真の加工や、写真を送ると他の人に意見を聞いてくれたり、画像を検索をしてくれたりします。
+ユーザは画像編集を考えなくてもAkiが自動的に目的に合わせて編集をやってくれます。  
+
 自動学習して賢くなっていきます。  
 
-## Sayaを友達に追加する
+## Akiを友達に追加する
 <img src="https://tomo.syo.tokyo/openimg/saya_line_qr.png" width="200px">  
 <a href="https://line.me/R/ti/p/%40hxs4046d"><img height="36" border="0" alt="友だち追加" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"></a>
 
 ## DemoImage
 <img src="https://tomo.syo.tokyo/openimg/5219767428574.LINE.jpg" width="180px">
-<img src="https://tomo.syo.tokyo/openimg/5258966893023.LINE.jpg" width="180px">
+<img src="https://tomo.syo.tokyo/openimg/5283374059498.LINE.jpg" width="180px">
 <img src="https://tomo.syo.tokyo/openimg/5249198785297.LINE.jpg" width="180px">
 <img src="https://tomo.syo.tokyo/openimg/5249388613463.LINE.jpg" width="180px">  
 
 ## できること
 1 会話(自動学習して新しいことばの組み合わせなど使う)  
 2 写真加工  
-3 複数の写真を合成して音楽付きのPV風なアルバムにする  
-4 複数の写真をメモとして保存しておける  
+3 各SNSでシェアを集めやすい度を測ってくれる。  
+(twitter,instagram,facebook,line,tinder,pairs,linkedin,wantedlyで評価を集めやすい自撮り画像)  
  
 
 ## Getting started
