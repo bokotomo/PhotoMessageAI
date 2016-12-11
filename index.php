@@ -4,7 +4,7 @@
  * function : camelCase  (Make the beginning of a word a verb / 単語の先頭を動詞にする)
  * method   : camelCase  (Make the beginning of a word a verb / 単語の先頭を動詞にする)
  * Class    : PascalCase (Make the beginning of a word a noun / 単語の先頭を名詞にする)
- * Variable : PascalCase (Make the beginning of a word a noun / 単語の先頭を名詞にする)
+ * variable : camelCase (Make the beginning of a word a noun / 単語の先頭を名詞にする)
  * DEFINE   : UPPERCASE_SNAKECASE
  * 
  * [Comment]
@@ -39,14 +39,14 @@ require_once(__DIR__."/library/tomolib/autoload.php");
 require_once(__DIR__."/library/sayalib/autoload.php");
 
 if(isset($_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE])){
-  $InputData = file_get_contents("php://input");
-  $Signature = $_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE]; 
-  $HttpClient = new CurlHTTPClient(ACCESS_TOKEN);
-  $Bot = new LINEBot($HttpClient, ['channelSecret' => SECRET_TOKEN]);
-  $Events = $Bot->parseEventRequest($InputData, $Signature);
+  $bodyData = file_get_contents("php://input");
+  $signature = $_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE]; 
+  $httpClient = new CurlHTTPClient(ACCESS_TOKEN);
+  $bot = new LINEBot($httpClient, ['channelSecret' => SECRET_TOKEN]);
+  $events = $bot->parseEventRequest($bodyData, $signature);
 
-  foreach($Events as $event){
-    $MainControllor = new MainControllor($Bot, $event);
+  foreach($events as $event){
+    $MainControllor = new MainControllor($bot, $event);
     $MainControllor->responseMessage();
   }
 }
