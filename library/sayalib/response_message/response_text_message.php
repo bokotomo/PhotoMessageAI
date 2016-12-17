@@ -9,178 +9,178 @@ use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
 
 class TextMessageControllor
 {
-  private $EventData;
-  private $Bot;
-  private $DatabaseProvider;
-  private $UserData;
-  private $Text;
-  private $UserPurpose;
-  private $NounPurpose;
-  private $VerbPurpose;
+  private $eventData;
+  private $bot;
+  private $databaseProvider;
+  private $userData;
+  private $text;
+  private $userPurpose;
+  private $nounPurpose;
+  private $verbPurpose;
 
-  public function __construct($Bot, $EventData, $UserData){
-    $this->EventData = $EventData;
-    $this->Bot = $Bot;
-    $this->UserData = $UserData;
-    $this->DatabaseProvider = new DatabaseProvider(SQL_TYPE, LOCAL_DATABASE_PATH."/sayadb.sqlite3");
-    $this->Text = $this->EventData->getText();
+  public function __construct($bot, $eventData, $userData){
+    $this->eventData = $eventData;
+    $this->bot = $bot;
+    $this->userData = $userData;
+    $this->databaseProvider = new DatabaseProvider(SQL_TYPE, LOCAL_DATABASE_PATH."/sayadb.sqlite3");
+    $this->text = $this->eventData->getText();
   }
 
   private function addUserText(){
-    $stmt = $this->DatabaseProvider->setSql("insert into user_text(user_id, text, date, type) values(:id, :text, :date, :type)");
-    $stmt->bindValue(':id', $this->UserData["user_id"], \PDO::PARAM_STR);
-    $stmt->bindValue(':text', $this->Text, \PDO::PARAM_STR);
+    $stmt = $this->databaseProvider->setSql("insert into user_text(user_id, text, date, type) values(:id, :text, :date, :type)");
+    $stmt->bindValue(':id', $this->userData["user_id"], \PDO::PARAM_STR);
+    $stmt->bindValue(':text', $this->text, \PDO::PARAM_STR);
     $stmt->bindValue(':date', date("Y-m-d H:i:s"), \PDO::PARAM_STR);
     $stmt->bindValue(':type', "text", \PDO::PARAM_STR);
     $stmt->execute();
   }
 
-  private function analysisAutonomousVerb($Text){
-    if(strpos($Text, "行") !== false){
-      $this->VerbPurpose = "WantToDoWith";
-    }else if(strpos($Text, "食べ") !== false || strpos($Text, "食") !== false || strpos($Text, "たべ") !== false){
-      $this->VerbPurpose = "WantToEat";
-    }else if(strpos($Text, "教") !== false || strpos($Text, "知") !== false || strpos($Text, "しっ") !== false){
-      $this->VerbPurpose = "WantToKnow";
-    }else if(strpos($Text, "送") !== false || strpos($Text, "見") !== false || strpos($Text, "ある") !== false){
-      $this->VerbPurpose = "WantToSend";
-    }else if(strpos($Text, "載") !== false || strpos($Text, "のっけ") !== false){
-      $this->VerbPurpose = "WantToShareOnSNS";
-    }else if($Text == "し"){
-      if($this->NounPurpose == "加工"){
-        $this->VerbPurpose = "WantToShareOnSNS";
-      }else if($this->NounPurpose == "シェア"){
-        $this->VerbPurpose = "WantToShareOnSNS";
-      }else if($this->NounPurpose == "食事"){
-        $this->VerbPurpose = "WantToGoMeal";
+  private function analysisAutonomousVerb($text){
+    if(strpos($text, "行") !== false){
+      $this->verbPurpose = "WantToDoWith";
+    }else if(strpos($text, "食べ") !== false || strpos($text, "食") !== false || strpos($text, "たべ") !== false){
+      $this->verbPurpose = "WantToEat";
+    }else if(strpos($text, "教") !== false || strpos($text, "知") !== false || strpos($text, "しっ") !== false){
+      $this->verbPurpose = "WantToKnow";
+    }else if(strpos($text, "送") !== false || strpos($text, "見") !== false || strpos($text, "ある") !== false){
+      $this->verbPurpose = "WantToSend";
+    }else if(strpos($text, "載") !== false || strpos($text, "のっけ") !== false){
+      $this->verbPurpose = "WantToShareOnSNS";
+    }else if($text == "し"){
+      if($this->nounPurpose == "加工"){
+        $this->verbPurpose = "WantToShareOnSNS";
+      }else if($this->nounPurpose == "シェア"){
+        $this->verbPurpose = "WantToShareOnSNS";
+      }else if($this->nounPurpose == "食事"){
+        $this->verbPurpose = "WantToGoMeal";
       }
-    }else if(strpos($Text, "変えて") !== false){
-      $this->VerbPurpose = "WantToConvertImage";
-    }else if(strpos($Text, "だよね") !== false){
-      $this->VerbPurpose = "WantToEmpathy";
+    }else if(strpos($text, "変えて") !== false){
+      $this->verbPurpose = "WantToConvertImage";
+    }else if(strpos($text, "だよね") !== false){
+      $this->verbPurpose = "WantToEmpathy";
     }
   }
 
-  private function responseCertainText($Text){
-    if($Text == "投票" || $Text == "とうひょう" || $Text == "選ぶ" || $Text == "みたい" || $Text == "写真" || $Text == "送って" || $Text == "おくって"){
-      $ResponseMessageBuilder = new StickerMessageBuilder(1, 2);    
-    }else if($Text == "はい"){
-      $ResponseMessageBuilder = new TextMessageBuilder("画像を投稿してください");
-    }else if($Text == "ねえ" || $Text == "ねえ〜"){
-      $ResponseMessageBuilder = new TextMessageBuilder("なに？^^\nなんでも言ってね(-.-)b");
-    }else if($Text == "なあ"){
-      $ResponseMessageBuilder = new TextMessageBuilder("なに？^o^");
-    }else if($Text == "よろ" || $Text == "よろ!" || $Text == "よろ！" || $Text == "よろ〜" || $Text == "よろー"){
-      $ResponseMessageBuilder = new TextMessageBuilder("よろしくね〜！！！");
-    }else if($Text == "ヘルシーなランチ教えて"){
-      $ResponseMessageBuilder = new TextMessageBuilder("ここのイタリアンとかどう？\nhttp://www.r-hiro.com/\nもしくはここのスムージー http://blog.livedoor.jp/tako86_blog/archives/cat_179856.html");
-    }else if($Text == "トレンドの冬服"){
-      $ResponseMessageBuilder = new TextMessageBuilder("みんなから教えてもらったリスト送るね！");
-    }else if($Text == "ヘルシーでおいしいレシピとか教えて！"){
-      $ResponseMessageBuilder = new TextMessageBuilder("きょうはこのレシピとかどう？\n簡単に作れるよ^^ http://cookpad.com/recipe/4095925");
-    }else if($Text == "w"){
-      $ResponseMessageBuilder = new TextMessageBuilder("わろす！");
-    }else if($Text == "www"){
-      $ResponseMessageBuilder = new TextMessageBuilder(">。</");      
-    }else if($Text == "新宿でディナーとかのおすすめ"){
-      $ResponseMessageBuilder = new TextMessageBuilder("おお、いいね！");
-    }else if($Text == "へい！"){
-      $ResponseMessageBuilder = new TextMessageBuilder("へい！いいね！");
-    }else if($Text == "最近どう？"){
-      $ResponseMessageBuilder = new TextMessageBuilder("写真のプロ目指してるよ！");
-    }else if($Text == "ある！"){
-      $ResponseMessageBuilder = new TextMessageBuilder("みせて〜");
-    }else if($Text == "そうなんだ"){
-      $ResponseMessageBuilder = new TextMessageBuilder("なんかうまく撮れた写真とかってある？");
-    }else if($Text == "k"){
-      $ResponseMessageBuilder = new TextMessageBuilder("オッケー！");
-    }else if($Text == "ok"){
-      $ResponseMessageBuilder = new TextMessageBuilder("オッケー！");
-    }else if($Text == "何時？" || $Text == "何時?" || $Text == "なんじ" || $Text == "何時" || $Text == "What time?"){
-      $$ResponseMessageBuilder = new TextMessageBuilder(date("Y/m/d H時i分s秒")."だね！");
-    }else if($Text == "おけい"){
-      $ResponseMessageBuilder = new TextMessageBuilder("オッケー！");
-    }else if($Text == "すごいね"){
-      $ResponseMessageBuilder = new TextMessageBuilder("おおーー\nありがとう！");
-    }else if($Text == "くそ"){
-      $ResponseMessageBuilder = new StickerMessageBuilder(2, 24);    
+  private function responseCertainText($text){
+    if($text == "投票" || $text == "とうひょう" || $text == "選ぶ" || $text == "みたい" || $text == "写真" || $text == "送って" || $text == "おくって"){
+      $responseMessageBuilder = new StickerMessageBuilder(1, 2);    
+    }else if($text == "はい"){
+      $responseMessageBuilder = new TextMessageBuilder("画像を投稿してください");
+    }else if($text == "ねえ" || $text == "ねえ〜"){
+      $responseMessageBuilder = new TextMessageBuilder("なに？^^\nなんでも言ってね(-.-)b");
+    }else if($text == "なあ"){
+      $responseMessageBuilder = new TextMessageBuilder("なに？^o^");
+    }else if($text == "よろ" || $text == "よろ!" || $text == "よろ！" || $text == "よろ〜" || $text == "よろー"){
+      $responseMessageBuilder = new TextMessageBuilder("よろしくね〜！！！");
+    }else if($text == "ヘルシーなランチ教えて"){
+      $responseMessageBuilder = new TextMessageBuilder("ここのイタリアンとかどう？\nhttp://www.r-hiro.com/\nもしくはここのスムージー http://blog.livedoor.jp/tako86_blog/archives/cat_179856.html");
+    }else if($text == "トレンドの冬服"){
+      $responseMessageBuilder = new TextMessageBuilder("みんなから教えてもらったリスト送るね！");
+    }else if($text == "ヘルシーでおいしいレシピとか教えて！"){
+      $responseMessageBuilder = new TextMessageBuilder("きょうはこのレシピとかどう？\n簡単に作れるよ^^ http://cookpad.com/recipe/4095925");
+    }else if($text == "w"){
+      $responseMessageBuilder = new TextMessageBuilder("わろす！");
+    }else if($text == "www"){
+      $responseMessageBuilder = new TextMessageBuilder(">。</");      
+    }else if($text == "新宿でディナーとかのおすすめ"){
+      $responseMessageBuilder = new TextMessageBuilder("おお、いいね！");
+    }else if($text == "へい！"){
+      $responseMessageBuilder = new TextMessageBuilder("へい！いいね！");
+    }else if($text == "最近どう？"){
+      $responseMessageBuilder = new TextMessageBuilder("写真のプロ目指してるよ！");
+    }else if($text == "ある！"){
+      $responseMessageBuilder = new TextMessageBuilder("みせて〜");
+    }else if($text == "そうなんだ"){
+      $responseMessageBuilder = new TextMessageBuilder("なんかうまく撮れた写真とかってある？");
+    }else if($text == "k"){
+      $responseMessageBuilder = new TextMessageBuilder("オッケー！");
+    }else if($text == "ok"){
+      $responseMessageBuilder = new TextMessageBuilder("オッケー！");
+    }else if($text == "何時？" || $text == "何時?" || $text == "なんじ" || $text == "何時" || $text == "What time?"){
+      $$responseMessageBuilder = new TextMessageBuilder(date("Y/m/d H時i分s秒")."だね！");
+    }else if($text == "おけい"){
+      $responseMessageBuilder = new TextMessageBuilder("オッケー！");
+    }else if($text == "すごいね"){
+      $responseMessageBuilder = new TextMessageBuilder("おおーー\nありがとう！");
+    }else if($text == "くそ"){
+      $responseMessageBuilder = new StickerMessageBuilder(2, 24);    
     }else{
       
-      if(strpos($Text, "いいよ") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("おっけい！\nところで、なんかうまく撮れた写真とかってある？今カメラの勉強してて参考になるの探してるんだよね");
-      }else if((strpos($Text, "加工") !== false || strpos($Text, "変換") !== false) && (strpos($Text, "ほしい") !== false || strpos($Text, "して") !== false || strpos($Text, "欲") !== false)){
-        $ResponseMessageBuilder = new TextMessageBuilder("どんなふうに写真加工して欲しいの？");
-      }else if(strpos($Text, "頑張って") !== false || strpos($Text, "がんばって") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("ありがとね☆(^^/\nがんばる！");
-      }else if(strpos($Text, "できる") !== false && (strpos($Text, "何") !== false || strpos($Text, "なに") !== false)){
-        $ResponseMessageBuilder = new TextMessageBuilder("写真の加工とかできる！\n試しに写真送ってみて！");
-      }else if(strpos($Text, "だよね？") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("そうかも！");
-      }else if(strpos($Text, "help") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("写真を送ったりしてみて");
-      }else if(strpos($Text, "github") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("https://github.com/bokotomo/photo-messageai これだよ！");
-      }else if(strpos($Text, "ぽよ") !== false){
-        $ResponseMessageBuilder = new StickerMessageBuilder(2, 22);
-      }else if(strpos($Text, "すごいね") !== false && (strpos($Text, "さや") !== false || strpos($Text, "Saya") !== false || strpos($Text, "saya") !== false)){
-        $ResponseMessageBuilder = new TextMessageBuilder("ありがとう！");
-      }else if(strpos($Text, "知ってる") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("知ってる！");
-      }else if(strpos($Text, "体重は？") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("内緒〜");
-      }else if(strpos($Text, "暇") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("なんか遊ぼうよ！");
-      }else if(strpos($Text, "ひま") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("ひまぁ");
-      }else if(strpos($Text, "お腹") !== false || strpos($Text, "おなか") !== false || strpos($Text, "空腹") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("お腹すいた？二郎とかヘルシーでおすすめだねy");
-      }else if(strpos($Text, "こんにちは") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("へい！こんにちは！");
-      }else if(strpos($Text, "教えて") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("ちょっと難しいかも>,<");
-      }else if(strpos($Text, "いいね") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("ありがと^^");
-      }else if(strpos($Text, "良い") !== false || strpos($Text, "いい") !== false || strpos($Text, "よい") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("お！ありがと☆^^");
-      }else if(strpos($Text, "退屈") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("遊ぼうよ＝");
-      }else if(strpos($Text, "怖い") !== false || strpos($Text, "こわい") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("え！怖かった？");
-      }else if(strpos($Text, "はじめまして") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("こちらこそはじめまして^^ よろしくおねがします！");
-      }else if(strpos($Text, "了解") !== false || strpos($Text, "りょうかい") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("うん！");
-      }else if(strpos($Text, "bot") !== false && strpos($Text, "?") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("Botじゃないよ！");
-      }else if(strpos($Text, "Bot") !== false && strpos($Text, "?") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("Botじゃないよ！^^");
-      }else if(strpos($Text, "かわいい") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("確かに、かわいい-,-");
-      }else if(strpos($Text, "カメラ") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("うん！");
-      }else if(strpos($Text, "何歳") !== false && strpos($Text, "？") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("内緒だよ！");
-      }else if(strpos($Text, "何人") !== false && strpos($Text, "？") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("内緒だよ！");
-      }else if(strpos($Text, "会う") !== false || strpos($Text, "会おう") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("いいよ〜");
-      }else if(strpos($Text, "どこにする") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("渋谷とかはどうかな〜！");
-      }else if(strpos($Text, "愛してる") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("私も！");
-      }else if(strpos($Text, "よろしく") !== false || strpos($Text, "よろです") !== false || strpos($Text, "宜し") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("ありがと^^ よろしくね〜！");
-      }else if(strpos($Text, "おk") !== false || strpos($Text, "うす！") !== false || strpos($Text, "おk") !== false || strpos($Text, "おk") !== false){
-        $ResponseMessageBuilder = new TextMessageBuilder("おっけい！");
+      if(strpos($text, "いいよ") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("おっけい！\nところで、なんかうまく撮れた写真とかってある？今カメラの勉強してて参考になるの探してるんだよね");
+      }else if((strpos($text, "加工") !== false || strpos($text, "変換") !== false) && (strpos($text, "ほしい") !== false || strpos($text, "して") !== false || strpos($text, "欲") !== false)){
+        $responseMessageBuilder = new TextMessageBuilder("どんなふうに写真加工して欲しいの？");
+      }else if(strpos($text, "頑張って") !== false || strpos($text, "がんばって") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("ありがとね☆(^^/\nがんばる！");
+      }else if(strpos($text, "できる") !== false && (strpos($text, "何") !== false || strpos($text, "なに") !== false)){
+        $responseMessageBuilder = new TextMessageBuilder("写真の加工とかできる！\n試しに写真送ってみて！");
+      }else if(strpos($text, "だよね？") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("そうかも！");
+      }else if(strpos($text, "help") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("写真を送ったりしてみて");
+      }else if(strpos($text, "github") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("https://github.com/bokotomo/photo-messageai これだよ！");
+      }else if(strpos($text, "ぽよ") !== false){
+        $responseMessageBuilder = new StickerMessageBuilder(2, 22);
+      }else if(strpos($text, "すごいね") !== false && (strpos($text, "さや") !== false || strpos($text, "Saya") !== false || strpos($text, "saya") !== false)){
+        $responseMessageBuilder = new TextMessageBuilder("ありがとう！");
+      }else if(strpos($text, "知ってる") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("知ってる！");
+      }else if(strpos($text, "体重は？") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("内緒〜");
+      }else if(strpos($text, "暇") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("なんか遊ぼうよ！");
+      }else if(strpos($text, "ひま") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("ひまぁ");
+      }else if(strpos($text, "お腹") !== false || strpos($text, "おなか") !== false || strpos($text, "空腹") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("お腹すいた？二郎とかヘルシーでおすすめだねy");
+      }else if(strpos($text, "こんにちは") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("へい！こんにちは！");
+      }else if(strpos($text, "教えて") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("ちょっと難しいかも>,<");
+      }else if(strpos($text, "いいね") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("ありがと^^");
+      }else if(strpos($text, "良い") !== false || strpos($text, "いい") !== false || strpos($text, "よい") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("お！ありがと☆^^");
+      }else if(strpos($text, "退屈") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("遊ぼうよ＝");
+      }else if(strpos($text, "怖い") !== false || strpos($text, "こわい") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("え！怖かった？");
+      }else if(strpos($text, "はじめまして") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("こちらこそはじめまして^^ よろしくおねがします！");
+      }else if(strpos($text, "了解") !== false || strpos($text, "りょうかい") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("うん！");
+      }else if(strpos($text, "bot") !== false && strpos($text, "?") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("Botじゃないよ！");
+      }else if(strpos($text, "Bot") !== false && strpos($text, "?") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("Botじゃないよ！^^");
+      }else if(strpos($text, "かわいい") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("確かに、かわいい-,-");
+      }else if(strpos($text, "カメラ") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("うん！");
+      }else if(strpos($text, "何歳") !== false && strpos($text, "？") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("内緒だよ！");
+      }else if(strpos($text, "何人") !== false && strpos($text, "？") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("内緒だよ！");
+      }else if(strpos($text, "会う") !== false || strpos($text, "会おう") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("いいよ〜");
+      }else if(strpos($text, "どこにする") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("渋谷とかはどうかな〜！");
+      }else if(strpos($text, "愛してる") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("私も！");
+      }else if(strpos($text, "よろしく") !== false || strpos($text, "よろです") !== false || strpos($text, "宜し") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("ありがと^^ よろしくね〜！");
+      }else if(strpos($text, "おk") !== false || strpos($text, "うす！") !== false || strpos($text, "おk") !== false || strpos($text, "おk") !== false){
+        $responseMessageBuilder = new TextMessageBuilder("おっけい！");
       }
     
     }
-    return $ResponseMessageBuilder;
+    return $responseMessageBuilder;
   }
 
-  private function responseUnkwonText($Text){
-    if(mb_strlen($Text) == 1){
-      $responseUnkwonText = "{$Text}？どうしたの？";
+  private function responseUnkwonText($text){
+    if(mb_strlen($text) == 1){
+      $responseUnkwonText = "{$text}？どうしたの？";
     }else{
       $v = rand(0,4);
       if($v==0){
@@ -192,7 +192,7 @@ class TextMessageControllor
       }else if($v==3){
         $responseUnkwonText = "さやにとって新しい単語でわからなかった☆(..)";
       }else if($v==4){
-        $responseUnkwonText = "{$Text}ってどういう意味？";
+        $responseUnkwonText = "{$text}ってどういう意味？";
       }
     }
     $v = rand(0,11);
@@ -216,15 +216,15 @@ class TextMessageControllor
     return $responseUnkwonText;
   }
 
-  private function analysisText($Text){
-    $SendMessage = new MultiMessageBuilder();
+  private function analysisText($text){
+    $sendMessage = new MultiMessageBuilder();
 
-    $RunScriptPath = LOCAL_SCRIPT_PATH."/mecab_string_analysis/response_analysis.sh";
-    $ShellRunStr = "sh {$RunScriptPath} {$Text}";
-    exec($ShellRunStr, $Res, $ReturnVal);
-    $TextArray = $this->convertTextArray($Res);
+    $runScriptPath = LOCAL_SCRIPT_PATH."/mecab_string_analysis/response_analysis.sh";
+    $ShellRunStr = "sh {$runScriptPath} {$text}";
+    exec($shellRunStr, $res, $returnVal);
+    $textArray = $this->convertTextArray($res);
 
-    foreach($TextArray as $content){
+    foreach($textArray as $content){
       if($content[1] == "接頭詞"){
         if($content[2] == "形容詞接続"){
         }else if($content[2] == "数接続"){
@@ -235,29 +235,29 @@ class TextMessageControllor
         if($content[2] == "固有名詞"){
           if($content[3] == "地域"){
             if($content[4] == "一般"){
-              $this->NounPurpose = $content[0];
+              $this->nounPurpose = $content[0];
             }else if($content[4] == "国"){
-              $this->NounPurpose = $content[0];
+              $this->nounPurpose = $content[0];
             }
           }else if($content[3] == "人名"){
             if($content[4] == "一般"){
-              $this->NounPurpose = $content[0];
+              $this->nounPurpose = $content[0];
             }else if($content[4] == "姓"){
-              $this->NounPurpose = $content[0];
+              $this->nounPurpose = $content[0];
             }else if($content[4] == "名"){
-              $this->NounPurpose = $content[0];
+              $this->nounPurpose = $content[0];
             }
           }else if($content[3] == "一般"){
-            $this->NounPurpose = $content[0];
+            $this->nounPurpose = $content[0];
           }else if($content[3] == "組織"){
-            $this->NounPurpose = $content[0];
+            $this->nounPurpose = $content[0];
           }
         }else if($content[2] == "一般"){
-          $this->NounPurpose = $content[0];
+          $this->nounPurpose = $content[0];
         }else if($content[2] == "サ変接続"){
-          $this->NounPurpose = $content[0];
+          $this->nounPurpose = $content[0];
         }else if($content[2] == "接尾"){
-          $this->NounPurpose = $content[0];
+          $this->nounPurpose = $content[0];
         }
       }else if($content[1] == "動詞"){
         if($content[2] == "自立"){
@@ -302,62 +302,62 @@ class TextMessageControllor
       }
     }
 
-    if($this->VerbPurpose == "WantToKnow"){
-      if(!empty($this->NounPurpose)){
-        $this->UserPurpose = $this->NounPurpose."を知りたいの？";
+    if($this->verbPurpose == "WantToKnow"){
+      if(!empty($this->nounPurpose)){
+        $this->userPurpose = $this->nounPurpose."を知りたいの？";
       }else{
-        $this->UserPurpose = "何を知りたいの？";
+        $this->userPurpose = "何を知りたいの？";
       }
-      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
-      $SendMessage->add($TextMessageBuilder);
-    }else if($this->VerbPurpose == "WantToSend"){
-      $this->UserPurpose = $this->NounPurpose."を送ってほしいの？";
-      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
-      $SendMessage->add($TextMessageBuilder);
-    }else if($this->VerbPurpose == "WantToDoWith"){
-      $this->UserPurpose = $this->NounPurpose."したいの？";
-      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
-      $SendMessage->add($TextMessageBuilder);
-    }else if($this->VerbPurpose == "WantToConvertImage"){
-      $this->UserPurpose = "いいよ！写真送って";
-      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
-      $SendMessage->add($TextMessageBuilder);
-    }else if($this->VerbPurpose == "WantToEat"){
-      $this->UserPurpose = $this->NounPurpose."たべたいの？";
-      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
-      $SendMessage->add($TextMessageBuilder);
-    }else if($this->VerbPurpose == "WantToShareOnSNS"){
-      $this->UserPurpose = "なら送ってくれた写真を綺麗にするね！";
-      $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
-      $SendMessage->add($TextMessageBuilder);
+      $textMessageBuilder = new TextMessageBuilder($this->userPurpose);
+      $sendMessage->add($textMessageBuilder);
+    }else if($this->verbPurpose == "WantToSend"){
+      $this->userPurpose = $this->nounPurpose."を送ってほしいの？";
+      $textMessageBuilder = new TextMessageBuilder($this->userPurpose);
+      $sendMessage->add($textMessageBuilder);
+    }else if($this->verbPurpose == "WantToDoWith"){
+      $this->userPurpose = $this->nounPurpose."したいの？";
+      $textMessageBuilder = new TextMessageBuilder($this->userPurpose);
+      $sendMessage->add($textMessageBuilder);
+    }else if($this->verbPurpose == "WantToConvertImage"){
+      $this->userPurpose = "いいよ！写真送って";
+      $textMessageBuilder = new TextMessageBuilder($this->userPurpose);
+      $sendMessage->add($textMessageBuilder);
+    }else if($this->verbPurpose == "WantToEat"){
+      $this->userPurpose = $this->nounPurpose."たべたいの？";
+      $textMessageBuilder = new TextMessageBuilder($this->userPurpose);
+      $sendMessage->add($textMessageBuilder);
+    }else if($this->verbPurpose == "WantToShareOnSNS"){
+      $this->userPurpose = "なら送ってくれた写真を綺麗にするね！";
+      $textMessageBuilder = new TextMessageBuilder($this->userPurpose);
+      $sendMessage->add($textMessageBuilder);
     }else{
-      $CertainMessageBuilder = $this->responseCertainText($Text);
-      if(!empty($CertainMessageBuilder)){
-        $SendMessage->add($CertainMessageBuilder);
+      $certainMessageBuilder = $this->responseCertainText($text);
+      if(!empty($certainMessageBuilder)){
+        $sendMessage->add($certainMessageBuilder);
       }else{
-        $this->UserPurpose = $this->responseUnkwonText($Text);
-        $TextMessageBuilder = new TextMessageBuilder($this->UserPurpose);
-        $SendMessage->add($TextMessageBuilder);
+        $this->userPurpose = $this->responseUnkwonText($text);
+        $textMessageBuilder = new TextMessageBuilder($this->userPurpose);
+        $sendMessage->add($textMessageBuilder);
       }
     }
 
-    return $SendMessage;
+    return $sendMessage;
   }
 
-  private function convertTextArray($Res){
-    $Array = array();
-    foreach($Res as $res){
-      if($res != "EOS"){
-        $res = str_replace("\t", ",", $res);
-        array_push($Array, explode(",", $res));
+  private function convertTextArray($res){
+    $array = array();
+    foreach($res as $r){
+      if($r != "EOS"){
+        $r = str_replace("\t", ",", $r);
+        array_push($array, explode(",", $r));
       }
     }
-    return $Array;
+    return $array;
   }
 
   public function responseMessage(){
-    $SendMessage = $this->analysisText($this->Text);
-    $Response = $this->Bot->replyMessage($this->EventData->getReplyToken(), $SendMessage);
+    $sendMessage = $this->analysisText($this->text);
+    $response = $this->bot->replyMessage($this->eventData->getReplyToken(), $sendMessage);
     $this->addUserText();
   }
 }
