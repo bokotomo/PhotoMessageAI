@@ -6,10 +6,11 @@ Akiさんは写真を扱ってくれるLineBotです。
 自動学習して賢くなっていきます。  
 
 ## Akiを友達に追加する
-<img src="https://tomo.syo.tokyo/openimg/saya_line_qr.png" width="200px">  
+<img src="https://tomo.syo.tokyo/openimg/saya_line_qr.png" width="180px">  
 <a href="https://line.me/R/ti/p/%40hxs4046d"><img height="36" border="0" alt="友だち追加" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"></a>
 
 ## DemoImage
+<img src="https://tomo.syo.tokyo/openimg/aki_video1.gif" width="180px">
 <img src="https://tomo.syo.tokyo/openimg/5283374059498.LINE.jpg" width="180px">
 <img src="https://tomo.syo.tokyo/openimg/5249198785297.LINE.jpg" width="180px">
 <img src="https://tomo.syo.tokyo/openimg/5249388613463.LINE.jpg" width="180px">  

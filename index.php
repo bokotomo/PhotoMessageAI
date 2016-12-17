@@ -46,7 +46,7 @@ if(isset($_SERVER["HTTP_".HTTPHeader::LINE_SIGNATURE])){
   $events = $bot->parseEventRequest($bodyData, $signature);
 
   foreach($events as $event){
-    $MainControllor = new MainControllor($bot, $event);
-    $MainControllor->responseMessage();
+    $mainControllor = new MainControllor($bot, $event);
+    $mainControllor->responseMessage();
   }
 }
